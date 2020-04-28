@@ -153,7 +153,7 @@ export class Gin {
         store.frame++;
 
         //    localStorage.setItem(game_name+"_app_state", JSON.stringify(store));
-        this.setState(store, 250);
+        this.setState(store, 90);
     };
 
     onFrame = (store) => {

@@ -20,6 +20,7 @@ import {getDefaultState} from './game/core/default_state';
 
 import {buildings, calcFullCost, buyItem, collectItem} from './game/knowledge/buildings';
 import {managers, hire} from './game/knowledge/managers';
+import {upgrades, upgrade} from './game/knowledge/upgrades';
 
 
 
@@ -104,7 +105,7 @@ class App extends Component {
             onClick: (state) => collectItem(state, props.item_key) }} />;
     
         const BuildingGinButton = (props) => <GinButton item={{
-            name: 'Upgrade',
+            name: 'Build',
             cost: calcFullCost(state, props.item_key),
             onClick: (state) => buyItem(state, props.item_key) }} />;
         
@@ -112,6 +113,11 @@ class App extends Component {
             name: 'Hire',
             cost: props.item.cost,
             onClick: (state) => hire(state, props.item_key) }} />;
+        
+        const UpGinButton = (props) => <GinButton item={{
+            name: 'Upgrade',
+            cost: props.item.cost,
+            onClick: (state) => upgrade(state, props.item_key) }} />;
     
         
     
@@ -144,7 +150,20 @@ class App extends Component {
         const upgrade_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h4 className="slim">Upgrade</h4>
+                    <h4 className="slim">Upgrades</h4>
+                    {_.map(upgrades, (item, key) =>
+                        <div className="flex-element flex-container-row panel slim" key={key}>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element">{item.name}</div>
+                                <div className="flex-element">level: {state.upgrades[key].level}</div>
+                            </div>
+                            <div className="flex-element">
+                                <div className="flex-element"><UpGinButton item={item} item_key={key} key={key} /></div>
+                                <div className="flex-element">Cost: <div className="flex-element">{drawCost(item.cost)}</div></div>
+                            </div>
+        
+                        </div>
+                    )}
                 </div>
             </div>;
         
@@ -161,7 +180,7 @@ class App extends Component {
                             <div className="flex-element flex-container-col slim">
                                 <div className="flex-element"><CollectGinButton item={item} item_key={key} key={key} /></div>
                                 <div className="flex-element">Cycle: {state.buildings[key].fullness}/{item.cycle}</div>
-                                <div className="flex-element">Profit: {drawCost(item.profit)}</div>
+                                <div className="flex-element">Profit: ({drawCost(item.profit)} X {state.buildings[key].level} X {state.buildings[key].modifier}) = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier}</div>
                             </div>
                             <div className="flex-element">
                                 <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} /></div>
@@ -242,7 +261,7 @@ class App extends Component {
                             settings_subcomponent
                             : ''}
 
-                        <div style={{width: '100%', height: '100px'}}></div>
+                        <div style={{width: '100%', height: '10px'}}></div>
                         
                         <div className="footer row">
                             <span className="col-xs filament"><a onClick={() => { this.changeTab('shop'); }}     title='Shop'>      Shop</a></span>
