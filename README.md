@@ -1,1 +1,2 @@
-# president
+# President
+Idle Clicker Prototype
