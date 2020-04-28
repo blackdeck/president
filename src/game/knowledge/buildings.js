@@ -21,7 +21,7 @@ export const calcFullCost = (store, item_key) => {
 
 
 export const collectItem = (store, item_key) => {
-    console.log(item_key, buildings[item_key].profit, store.buildings[item_key].level);
+    // console.log(item_key, buildings[item_key].profit, store.buildings[item_key].level);
     
     store.buildings[item_key].fullness = 0;
     store = gainCost(store, _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level));

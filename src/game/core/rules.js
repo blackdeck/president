@@ -17,11 +17,11 @@ export const rules = {
                 if (building.level > 0 && store.buildings[key].fullness < buildings[key].cycle) {
                     store.buildings[key].fullness++;
                     
-                    /* AUTOMATION
-                    if (store.buildings[key].fullness >= buildings[key].cycle) {
+                    // /* AUTOMATION
+                    if (store.buildings[key].fullness >= buildings[key].cycle && store.managers[key].hired) {
                         store = collectItem(store, key);
                     }
-                    */
+                    // */
                 }
             });
             return store;

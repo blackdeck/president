@@ -3,6 +3,7 @@
 import _ from 'lodash';
 
 import {buildings} from '../knowledge/buildings';
+import {managers} from '../knowledge/managers';
 
 export const default_state = {
     isFull: false,
@@ -13,6 +14,7 @@ export const default_state = {
     
     
     buildings: _.mapValues(buildings, () => { return {level: 0, fullness: 0}; }),
+    managers:  _.mapValues(managers,  () => { return {hired: false}; }),
     
     
     

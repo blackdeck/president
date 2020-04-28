@@ -17,7 +17,9 @@ import {rules} from './game/core/rules';
 
 import {game_name} from './game/core/app_config';
 import {getDefaultState} from './game/core/default_state';
+
 import {buildings, calcFullCost, buyItem, collectItem} from './game/knowledge/buildings';
+import {managers, hire} from './game/knowledge/managers';
 
 
 
@@ -105,6 +107,11 @@ class App extends Component {
             name: 'Upgrade',
             cost: calcFullCost(state, props.item_key),
             onClick: (state) => buyItem(state, props.item_key) }} />;
+        
+        const HireGinButton = (props) => <GinButton item={{
+            name: 'Hire',
+            cost: props.item.cost,
+            onClick: (state) => hire(state, props.item_key) }} />;
     
         
     
@@ -130,21 +137,21 @@ class App extends Component {
         const shop_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h6 className="slim">Shop</h6>
+                    <h4 className="slim">Shop</h4>
                 </div>
             </div>;
         
         const upgrade_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h6 className="slim">Upgrade</h6>
+                    <h4 className="slim">Upgrade</h4>
                 </div>
             </div>;
         
         const building_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h6 className="slim">Building</h6>
+                    <h4 className="slim">Building</h4>
                     {_.map(buildings, (item, key) =>
                         <div className="flex-element flex-container-row panel slim" key={key}>
                             <div className="flex-element flex-container-col slim">
@@ -169,14 +176,34 @@ class App extends Component {
         const managers_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h6 className="slim">Managers</h6>
+                    <h4 className="slim">Managers</h4>
+                    {_.map(managers, (item, key) =>
+                        <div className="flex-element flex-container-row panel slim" key={key}>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element">{item.name}</div>
+                            </div>
+                            {state.managers[key].hired ?
+                                <div className="flex-element">
+                                    <h4>Hired</h4>
+                                </div>
+                                :
+                                <div className="flex-element">
+                                    <div className="flex-element"><HireGinButton item={item} item_key={key} key={key}/></div>
+                                    <div className="flex-element">Cost:
+                                        <div className="flex-element">{drawCost(item.cost)}</div>
+                                    </div>
+                                </div>
+                            }
+        
+                        </div>
+                    )}
                 </div>
             </div>;
         
         const settings_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h6 className="slim">Setting</h6>
+                    <h4 className="slim">Setting</h4>
                 </div>
             </div>;
         
