@@ -27,7 +27,7 @@ export const default_state = {
     
     
     
-    game_speed: 3000, // 1000
+    game_speed: 1000, // 1000
     frame_rate: 10,
     game_speed_multiplier: 1,
     frame: 0,
@@ -43,7 +43,7 @@ export const getDefaultState = () => {
     let state = _.cloneDeep(default_state);
 
     state.balances.money = 1;
-    state.balances.money = 900000;
+   // state.balances.money = 900000;
     
     state.storage.money1.level = 1;
     state = calcAllStorage(state);
