@@ -174,7 +174,7 @@ class App extends Component {
                     {_.map(buildings, (item, key) =>
                         <div className="flex-element flex-container-row panel slim" key={key}>
                             <div className="flex-element flex-container-col slim">
-                                <div className="flex-element">{item.name}</div>
+                                <div className="flex-element"><h5>{item.name}</h5></div>
                                 <div className="flex-element">level: {state.buildings[key].level}</div>
                             </div>
                             <div className="flex-element flex-container-col slim">

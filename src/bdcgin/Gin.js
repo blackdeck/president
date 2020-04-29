@@ -99,14 +99,14 @@ export class Gin {
         }
         if (item.cost) {
             if (isEnough(store, item.cost)) {
-                if (item.onClick) this.setState(item.onClick(chargeCost(store, item.cost), {gin: this}), 25);
+                if (item.onClick) this.setState(item.onClick(chargeCost(store, item.cost), {gin: this}), 0);
             }
             else {
                 return false;
             }
         }
         else {
-            if (item.onClick) this.setState(item.onClick(store, {gin: this}), 25);
+            if (item.onClick) this.setState(item.onClick(store, {gin: this}), 0);
         }
     };
     
