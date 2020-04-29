@@ -12,6 +12,8 @@ export const default_state = {
     tab: 'intro',
     
     balances: {money: 0, goods: 0, oil: 0},
+    rockets: 0,
+    space_balances: {money: 0, goods: 0, oil: 0},
     
     
     buildings: _.mapValues(buildings, () => { return {level: 0, fullness: 0, modifier: 1}; }),
