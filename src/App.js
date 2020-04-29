@@ -12,6 +12,7 @@ import './css/App.css';
 
 import {Gin, isEnough, drawCost} from './bdcgin/Gin';
 import GinGameMenu from './bdcgin/GinGameMenu';
+import GinButton, { CollectGinButton, BuildingGinButton, HireGinButton, UpGinButton } from "./core/GinButton";
 
 import {rules} from './game/core/rules';
 
@@ -62,7 +63,7 @@ class App extends Component {
 
         //console.log(state.target);
 
-        const GinButton = (props) => {
+        /*const GinButton = (props) => {
             let item = props.item;
             //console.log(item);
             return (item.isLocked && item.isLocked(this.state))
@@ -73,10 +74,10 @@ class App extends Component {
                     onClick={() => { this.gin.onClick(item); }}>
                     {item.name}
                 </button>
-        };
+        };*/
 
 
-        const ConsumableGinButton = (props) => <GinButton item={{
+        /*const ConsumableGinButton = (props) => <GinButton item={{
             name: props.item.name,
             isDisabled: (state) => !props.item.consumableIf(state, {attacker: 'player',  defender: 'target'}),
             onClick: (state) => { state.player.belt.splice(props.index, 1); return props.item.onConsume(state, {attacker: 'player',  defender: 'target'}); } }} />;
@@ -117,7 +118,7 @@ class App extends Component {
         const UpGinButton = (props) => <GinButton item={{
             name: 'Upgrade',
             cost:    calcUpgradeCost(state, props.item_key),
-            onClick: (state) => upgrade(state, props.item_key) }} />;
+            onClick: (state) => upgrade(state, props.item_key) }} />;*/
     
         
     
@@ -158,7 +159,7 @@ class App extends Component {
                                 <div className="flex-element">level: {state.upgrades[key].level}</div>
                             </div>
                             <div className="flex-element">
-                                <div className="flex-element"><UpGinButton item={item} item_key={key} key={key} /></div>
+                                <div className="flex-element"><UpGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
                                 <div className="flex-element">Cost: <div className="flex-element">{drawCost(calcUpgradeCost(state, key))}</div></div>
                             </div>
                         </div>
@@ -177,12 +178,12 @@ class App extends Component {
                                 <div className="flex-element">level: {state.buildings[key].level}</div>
                             </div>
                             <div className="flex-element flex-container-col slim">
-                                <div className="flex-element"><CollectGinButton item={item} item_key={key} key={key} /></div>
+                                <div className="flex-element"><CollectGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
                                 <div className="flex-element">Cycle: {state.buildings[key].fullness}/{item.cycle}</div>
                                 <div className="flex-element">Profit: ({drawCost(item.profit)} X {state.buildings[key].level} X {state.buildings[key].modifier}) = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier}</div>
                             </div>
                             <div className="flex-element">
-                                <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} /></div>
+                                <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
                                 <div className="flex-element">Cost: <div className="flex-element">{drawCost(calcBuildCost(state, key))}</div></div>
                             </div>
                             
@@ -206,7 +207,7 @@ class App extends Component {
                                 </div>
                                 :
                                 <div className="flex-element">
-                                    <div className="flex-element"><HireGinButton item={item} item_key={key} key={key}/></div>
+                                    <div className="flex-element"><HireGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
                                     <div className="flex-element">Cost:
                                         <div className="flex-element">{drawCost(item.cost)}</div>
                                     </div>
