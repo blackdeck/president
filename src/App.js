@@ -18,9 +18,9 @@ import {rules} from './game/core/rules';
 import {game_name} from './game/core/app_config';
 import {getDefaultState} from './game/core/default_state';
 
-import {buildings, calcFullCost, buyItem, collectItem} from './game/knowledge/buildings';
+import {buildings, calcBuildCost, buyItem, collectItem} from './game/knowledge/buildings';
 import {managers, hire} from './game/knowledge/managers';
-import {upgrades, upgrade} from './game/knowledge/upgrades';
+import {upgrades, calcUpgradeCost, upgrade} from './game/knowledge/upgrades';
 
 
 
@@ -105,8 +105,8 @@ class App extends Component {
             onClick: (state) => collectItem(state, props.item_key) }} />;
     
         const BuildingGinButton = (props) => <GinButton item={{
-            name: 'Build',
-            cost: calcFullCost(state, props.item_key),
+            name:    'Build',
+            cost:    calcBuildCost(state, props.item_key),
             onClick: (state) => buyItem(state, props.item_key) }} />;
         
         const HireGinButton = (props) => <GinButton item={{
@@ -116,7 +116,7 @@ class App extends Component {
         
         const UpGinButton = (props) => <GinButton item={{
             name: 'Upgrade',
-            cost: props.item.cost,
+            cost:    calcUpgradeCost(state, props.item_key),
             onClick: (state) => upgrade(state, props.item_key) }} />;
     
         
@@ -159,9 +159,8 @@ class App extends Component {
                             </div>
                             <div className="flex-element">
                                 <div className="flex-element"><UpGinButton item={item} item_key={key} key={key} /></div>
-                                <div className="flex-element">Cost: <div className="flex-element">{drawCost(item.cost)}</div></div>
+                                <div className="flex-element">Cost: <div className="flex-element">{drawCost(calcUpgradeCost(state, key))}</div></div>
                             </div>
-        
                         </div>
                     )}
                 </div>
@@ -184,7 +183,7 @@ class App extends Component {
                             </div>
                             <div className="flex-element">
                                 <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} /></div>
-                                <div className="flex-element">Cost: <div className="flex-element">{drawCost(calcFullCost(state, key))}</div></div>
+                                <div className="flex-element">Cost: <div className="flex-element">{drawCost(calcBuildCost(state, key))}</div></div>
                             </div>
                             
                         </div>

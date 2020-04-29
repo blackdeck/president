@@ -38,7 +38,7 @@ export const getDefaultState = () => {
     let state = _.cloneDeep(default_state);
 
     state.balances.money = 1;
-   // state.balances.money = 10;
+    state.balances.money = 10000;
     
     // state.balances.buildings = _.mapValues(buildings, () => { return {level: 1}; });
 
