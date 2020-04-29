@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import {isEnough, gainCost} from '../../bdcgin/Gin';
 
+import {storage, calcStorageCapacity} from '../knowledge/storage';
 import {buildings, collectItem} from '../knowledge/buildings';
 
 
@@ -32,5 +33,6 @@ export const rules = {
             return store;
         }
     },
+    
     
 };
