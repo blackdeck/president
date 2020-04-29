@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import {isEnough, gainCost} from '../../bdcgin/Gin';
 
-export const calcFullCost = (store, item_key) => {
+export const calcBuildCost = (store, item_key) => {
     // console.log(item_key, store.buildings, store.buildings[item_key]);
     
     return _.mapValues(buildings[item_key].base_cost, (item_cost, key) => {
