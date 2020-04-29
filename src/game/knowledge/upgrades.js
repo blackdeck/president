@@ -1,6 +1,9 @@
 
 import _ from 'lodash';
 
+import {gainCost} from '../../bdcgin/Gin';
+
+import {storage, calcAllStorage} from '../knowledge/storage';
 
 
 export const calcUpgradeCost = (store, item_key) => {
@@ -22,18 +25,26 @@ export const calcUpgradeCost = (store, item_key) => {
 
 export const upgrade = (store, item_key) => {
     store.upgrades[item_key].level++;
-    _.each(upgrades[item_key].affected, (building) => { store.buildings[building].modifier++; });
+    // _.each(upgrades[item_key].affected, (building) => { store.buildings[building].modifier++; });
+    
+    store = gainCost(store, upgrades[item_key].affected);
+    store = calcAllStorage(store);
+    
     return store;
 };
 
 
 export var upgrades = {
-    tier1Up:    {name: "Tier1Up", affected: ['money1', 'goods1', 'oil1'],    base_cost: {'balances.money': 1000,      'balances.goods': 100,    'balances.oil': 10},      text: 'text' },
-    tier2Up:    {name: "Tier2Up", affected: ['money2', 'goods2', 'oil2'],    base_cost: {'balances.money': 10000,     'balances.goods': 1000,   'balances.oil': 100},      text: 'text' },
-    tier3Up:    {name: "Tier3Up", affected: ['money3', 'goods3', 'oil3'],    base_cost: {'balances.money': 100000,    'balances.goods': 10000,  'balances.oil': 1000},      text: 'text' },
+    storageMoneyUp: {name: "storageMoneyUp", affected: {'storage.money1.modifier': 1},  base_cost: {'balances.money': 0,      'balances.goods': 100, 'balances.oil': 10},     text: 'text' },
+    storageGoodsUp: {name: "storageGoodsUp", affected: {'storage.goods1.modifier': 1},  base_cost: {'balances.money': 1000,   'balances.goods': 0,   'balances.oil': 10},     text: 'text' },
+    storageOilUp: {name: "storageOilUp",     affected: {'storage.oil1.modifier': 1},    base_cost: {'balances.money': 1000,   'balances.goods': 100, 'balances.oil': 0},      text: 'text' },
     
-    indMoneyUP: {name: "IndMoneyUP", affected: ['money1', 'money2', 'money3'], base_cost: {'balances.money': 1000,      'balances.goods': 100,    'balances.oil': 10},      text: 'text' },
-    indGoodsUP: {name: "IndGoodsUP", affected: ['goods1', 'goods2', 'goods3'], base_cost: {'balances.money': 10000,     'balances.goods': 1000,   'balances.oil': 100},      text: 'text' },
-    indOilUP:   {name: "IndOilUP"  , affected: ['oil1', 'oil2', 'oil3'],       base_cost: {'balances.money': 100000,    'balances.goods': 10000,  'balances.oil': 1000},      text: 'text' },
+    tier1Up:    {name: "Tier1Up", affected: {'buildings.money1.modifier': 1, 'buildings.goods1.modifier': 1, 'buildings.oil1.modifier': 1},    base_cost: {'balances.money': 1000,      'balances.goods': 100,    'balances.oil': 10},      text: 'text' },
+    tier2Up:    {name: "Tier2Up", affected: {'buildings.money2.modifier': 1, 'buildings.goods2.modifier': 1, 'buildings.oil2.modifier': 1},    base_cost: {'balances.money': 10000,     'balances.goods': 1000,   'balances.oil': 100},      text: 'text' },
+    tier3Up:    {name: "Tier3Up", affected: {'buildings.money3.modifier': 1, 'buildings.goods3.modifier': 1, 'buildings.oil3.modifier': 1},    base_cost: {'balances.money': 100000,    'balances.goods': 10000,  'balances.oil': 1000},      text: 'text' },
+    
+    indMoneyUP: {name: "IndMoneyUP", affected: {'buildings.money1.modifier': 1, 'buildings.money2.modifier': 1, 'buildings.money3.modifier': 1}, base_cost: {'balances.money': 1000,      'balances.goods': 100,    'balances.oil': 10},      text: 'text' },
+    indGoodsUP: {name: "IndGoodsUP", affected: {'buildings.goods1.modifier': 1, 'buildings.goods2.modifier': 1, 'buildings.goods3.modifier': 1}, base_cost: {'balances.money': 10000,     'balances.goods': 1000,   'balances.oil': 100},      text: 'text' },
+    indOilUP:   {name: "IndOilUP"  , affected: {'buildings.oil1.modifier': 1, 'buildings.oil2.modifier': 1, 'buildings.oil3.modifier': 1},       base_cost: {'balances.money': 100000,    'balances.goods': 10000,  'balances.oil': 1000},      text: 'text' },
     
 };

@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import {isEnough} from "../bdcgin/Gin";
+import {storage, calcStorageCost, buyStorage} from '../game/knowledge/storage';
 import {buyItem, calcBuildCost, collectItem} from "../game/knowledge/buildings";
 import {hire} from "../game/knowledge/managers";
 import {calcUpgradeCost, upgrade} from "../game/knowledge/upgrades";
@@ -86,6 +87,21 @@ export class CollectGinButton extends Component {
     }
 }
 
+export class StorageGinButton extends Component {
+    render() {
+        return (
+            <GinButton
+                item={{
+                    name:    'Build',
+                    cost:    calcStorageCost(this.props.state, this.props.item_key),
+                    onClick: (state) => buyStorage(state, this.props.item_key)
+                }}
+                state={this.props.state}
+                gin={this.props.gin}
+            />
+        );
+    }
+}
 export class BuildingGinButton extends Component {
     render() {
         return (
