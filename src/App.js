@@ -15,6 +15,7 @@ import GinGameMenu from './bdcgin/GinGameMenu';
 import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, HireGinButton, UpGinButton } from "./core/GinButton";
 
 import {rules} from './game/core/rules';
+import {pick} from './game/helpers';
 
 import {game_name} from './game/core/app_config';
 import {getDefaultState} from './game/core/default_state';
@@ -87,34 +88,35 @@ class App extends Component {
                     <div className="row-xs filament">{state.balances.money} Money</div>
                     <div className="row-xs filament">filed: {(state.balances.money/state.storage_limit.money*100).toFixed(0)}%</div>
                 </div>
-                {state.balances.goods > 0 && state.environment == 'earth' ?
+                {state.buildings.goods1.level > 0 && state.environment == 'earth' ?
                     <div className="col-xs flex-element filament">
                         <div className="row-xs filament">{state.balances.goods} Goods</div>
                         <div className="row-xs filament">filed: {(state.balances.goods/state.storage_limit.goods*100).toFixed(0)}%</div>
                     </div> : ''}
-                {state.balances.oil > 0 && state.environment == 'earth' ?
+                {state.buildings.oil1.level > 0 && state.environment == 'earth' ?
                     <div className="col-xs flex-element filament">
                         <div className="row-xs filament">{state.balances.oil}   Oil</div>
                         <div className="row-xs filament">filed: {(state.balances.oil/state.storage_limit.oil*100).toFixed(0)}%</div>
                     </div> : ''}
-                {state.balances.materials > 0 && state.environment == 'space' ?
+                {state.buildings.materials1space.level > 0 && state.environment == 'space' ?
                     <div className="col-xs flex-element filament">
                         <div className="row-xs filament">{state.balances.materials} Materials</div>
                         <div className="row-xs filament">filed: {(state.balances.materials/state.storage_limit.materials*100).toFixed(0)}%</div>
                     </div> : ''}
-                {state.balances.helium > 0 && state.environment == 'space' ?
+                {state.buildings.helium1space.level > 0 && state.environment == 'space' ?
                     <div className="col-xs flex-element filament">
                         <div className="row-xs filament">{state.balances.helium}   Helium</div>
                         <div className="row-xs filament">filed: {(state.balances.helium/state.storage_limit.helium*100).toFixed(0)}%</div>
                     </div> : ''}
     
-                <div className="col-xs  flex-element filament">
-                    <div className="row-xs filament"><GinButton item={{
-                        name: state.environment == 'earth' ? 'Space' : 'Earth',
-                        onClick: (state) => { state.environment = state.environment == 'earth' ? 'space' : 'earth'; return state; }
-                    }} state={this.state} gin={this.gin} /></div>
-                    <div className="row-xs filament">Rockets: {state.special.rockets.toFixed(0)}</div>
-                </div>
+                {state.buildings.rocket.level > 0 ?
+                    <div className="col-xs  flex-element filament">
+                        <div className="row-xs filament"><GinButton item={{
+                            name: state.environment == 'earth' ? 'Space' : 'Earth',
+                            onClick: (state) => { state.environment = state.environment == 'earth' ? 'space' : 'earth'; return state; }
+                        }} state={this.state} gin={this.gin} /></div>
+                        <div className="row-xs filament">Rockets: {state.special.rockets.toFixed(0)}</div>
+                    </div> : ''}
                     
             </div>;
     
@@ -129,7 +131,7 @@ class App extends Component {
             <div className="filament">
                 <div className="flex-container-col panel">
                     <h4 className="slim">Upgrades</h4>
-                    {_.map(_.pickBy(upgrades, {location: state.environment}), (item, key) =>
+                    {_.map(pick(state, upgrades), (item, key) =>
                         <div className="flex-element flex-container-row panel filament" key={key}>
                             <div className="flex-element flex-container-row slim">
                                 <div className="flex-element slim"><h3 className="slim">{state.upgrades[key].level}</h3></div>
@@ -153,7 +155,7 @@ class App extends Component {
                 <div className="flex-container-col panel">
                     <h4 className="slim">Building</h4>
                     <h5 className="slim">Storage</h5>
-                    {_.map(_.pickBy(storage, {location: state.environment}), (item, key) =>
+                    {_.map(pick(state, storage), (item, key) =>
                         <div className="flex-element flex-container-row panel filament" key={key}>
                             <div className="flex-element flex-container-row slim">
                                 <div className="flex-element slim"><h3 className="slim">{state.storage[key].level}</h3></div>
@@ -171,7 +173,7 @@ class App extends Component {
                     )}
                     
                     <h5 className="slim">Industries</h5>
-                    {_.map(_.pickBy(buildings, {location: state.environment}), (item, key) =>
+                    {_.map(pick(state, buildings), (item, key) =>
                         <div className="flex-element flex-container-row panel filament" key={key}>
                             <div className="flex-element flex-container-row slim">
                                 <div className="flex-element slim"><h3 className="slim">{state.buildings[key].level}</h3></div>
@@ -182,7 +184,7 @@ class App extends Component {
                                     <div className="flex-element"><CollectGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
                                     <div className="flex-element">Cycle: {state.buildings[key].fullness}/{item.cycle}</div>
                                 </div>
-                                <div className="flex-element">Profit: {_.values(item.profit)[0]} x {state.buildings[key].level} x {state.buildings[key].modifier} = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier} {item.type}</div>
+                                <div className="flex-element">Profit: {_.values(item.profit)[0]} x {state.buildings[key].level} x {state.buildings[key].modifier} = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier} {item.type} or {(_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier / item.cycle * 10).toFixed(0)}/sec </div>
                             </div>
                             <div className="flex-element">
                                 <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
@@ -197,7 +199,7 @@ class App extends Component {
             <div className="filament">
                 <div className="flex-container-col panel">
                     <h4 className="slim">Managers</h4>
-                    {_.map(_.pickBy(managers, {location: state.environment}), (item, key) =>
+                    {_.map(pick(state, managers), (item, key) =>
                         <div className="flex-element flex-container-row panel filament" key={key}>
                             <div className="flex-element flex-container-col slim">
                                 <div className="flex-element">{item.name}</div>

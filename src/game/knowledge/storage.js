@@ -51,12 +51,12 @@ export const buyStorage = (store, item_key) => {
 
 
 export var storage = {
-    money1: {name: "Bank",      location: 'earth', resource: 'money', base_cost: {'balances.money': 100, 'balances.goods': 0,  'balances.oil': 0}, capacity: {'money': 10000}, text: 'text' },
-    goods1: {name: "Warehouse", location: 'earth', resource: 'goods', base_cost: {'balances.money': 0,   'balances.goods': 30, 'balances.oil': 0}, capacity: {'goods': 1000}, text: 'text' },
-    oil1:   {name: "Tanker",    location: 'earth', resource: 'oil',   base_cost: {'balances.money': 0,   'balances.goods': 0,  'balances.oil': 5}, capacity: {'oil': 100},   text: 'text' },
+    money1: {name: "Bank",      location: 'earth', resource: 'money', base_cost: {'balances.money': 100, 'balances.goods': 0,  'balances.oil': 0},  capacity: {'money': 10000}, text: 'text', isHidden: (store) => store.buildings.money1.level == 0  },
+    goods1: {name: "Warehouse", location: 'earth', resource: 'goods', base_cost: {'balances.money': 0,   'balances.goods': 30, 'balances.oil': 0},  capacity: {'goods': 2000},  text: 'text', isHidden: (store) => store.buildings.goods1.level == 0  },
+    oil1:   {name: "Tanker",    location: 'earth', resource: 'oil',   base_cost: {'balances.money': 0,   'balances.goods': 0,  'balances.oil': 10}, capacity: {'oil': 500},     text: 'text', isHidden: (store) => store.buildings.oil1.level == 0  },
     
-    money1space:      {name: "Cluster", location: 'space', resource: 'money',     base_cost: {'special.rockets': 1, 'balances.money': 10000, 'balances.materials': 0,  'balances.helium': 0}, capacity: {'money': 10000}, text: 'text' },
-    materials1space:  {name: "Dock",    location: 'space', resource: 'materials', base_cost: {'special.rockets': 1, 'balances.money': 0,     'balances.materials': 30, 'balances.helium': 0}, capacity: {'materials': 1000}, text: 'text' },
-    helium1space:     {name: "Chamber", location: 'space', resource: 'helium',    base_cost: {'special.rockets': 1, 'balances.money': 0,     'balances.materials': 0,  'balances.helium': 5}, capacity: {'helium': 100},   text: 'text' },
+    money1space:      {name: "Cluster", location: 'space', resource: 'money',     base_cost: {'special.rockets': 1, 'balances.money': 10000, 'balances.materials': 0,  'balances.helium': 0},  capacity: {'money': 10000},    text: 'text', isHidden: (store) => store.buildings.money1space.level == 0  },
+    materials1space:  {name: "Dock",    location: 'space', resource: 'materials', base_cost: {'special.rockets': 1, 'balances.money': 0,     'balances.materials': 30, 'balances.helium': 0},  capacity: {'materials': 2000}, text: 'text', isHidden: (store) => store.buildings.materials1space.level == 0  },
+    helium1space:     {name: "Chamber", location: 'space', resource: 'helium',    base_cost: {'special.rockets': 1, 'balances.money': 0,     'balances.materials': 0,  'balances.helium': 10}, capacity: {'helium': 500},     text: 'text', isHidden: (store) => store.buildings.helium1space.level == 0  },
     
 };
