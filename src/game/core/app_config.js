@@ -1,2 +1,2 @@
 
-export const game_name = 'bdcgin';
+export const game_name = 'president';

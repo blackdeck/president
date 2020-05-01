@@ -7,23 +7,23 @@ import {buildings} from '../knowledge/buildings';
 import {managers} from '../knowledge/managers';
 import {upgrades} from '../knowledge/upgrades';
 
+
 export const default_state = {
     isFull: false,
     
     tab: 'intro',
     
-    balances: {money: 0, goods: 0, oil: 0},
-    rockets: 0,
-    space_balances: {money: 0, goods: 0, oil: 0},
-    
+    balances:       {money: 0, goods: 0, oil: 0, materials: 0, helium: 0},
+    storage_limit:  {money: 0, goods: 0, oil: 0, materials: 0, helium: 0},
+    special: {rockets: 0, colonizer: 0},
     
     storage:   _.mapValues(storage,   () => { return {level: 0, modifier: 1}; }),
-    storage_limit: {money: 0, goods: 0, oil: 0},
     buildings: _.mapValues(buildings, () => { return {level: 0, fullness: 0, modifier: 1}; }),
     managers:  _.mapValues(managers,  () => { return {hired: false}; }),
     upgrades:  _.mapValues(upgrades,  () => { return {level: 0}; }),
     
-    
+    environment: 'earth',
+    space_era: false,
     
     
     
@@ -45,7 +45,7 @@ export const getDefaultState = () => {
     state.balances.money = 1;
    // state.balances.money = 900000;
     
-    state.storage.money1.level = 1;
+    // state.storage.money1.level = 1;
     state = calcAllStorage(state);
     
     // state.balances.buildings = _.mapValues(buildings, () => { return {level: 1}; });
