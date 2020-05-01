@@ -27,7 +27,7 @@ export const calcStorageCapacity = (store, item_key) => {
 
 
 export const calcAllStorage = (store) => {
-    let limits = {money: 1000, goods: 100, oil: 10};
+    let limits = {money: 10000, goods: 1000, oil: 100, materials: 1000, helium: 100};
     
     _.each(storage, (storage_item, key) => {
         _.each(calcStorageCapacity(store, key), (capacity, resource) => {
@@ -51,8 +51,12 @@ export const buyStorage = (store, item_key) => {
 
 
 export var storage = {
-    money1: {name: "Bank",      resource: 'money', base_cost: {'balances.money': 100, 'balances.goods': 0,  'balances.oil': 0}, capacity: {'money': 1000}, text: 'text' },
-    goods1: {name: "Warehouse", resource: 'goods', base_cost: {'balances.money': 0,   'balances.goods': 30, 'balances.oil': 0}, capacity: {'goods': 100}, text: 'text' },
-    oil1:   {name: "Tanker",    resource: 'oil',   base_cost: {'balances.money': 0,   'balances.goods': 0,  'balances.oil': 5}, capacity: {'oil': 10},   text: 'text' },
+    money1: {name: "Bank",      location: 'earth', resource: 'money', base_cost: {'balances.money': 100, 'balances.goods': 0,  'balances.oil': 0}, capacity: {'money': 10000}, text: 'text' },
+    goods1: {name: "Warehouse", location: 'earth', resource: 'goods', base_cost: {'balances.money': 0,   'balances.goods': 30, 'balances.oil': 0}, capacity: {'goods': 1000}, text: 'text' },
+    oil1:   {name: "Tanker",    location: 'earth', resource: 'oil',   base_cost: {'balances.money': 0,   'balances.goods': 0,  'balances.oil': 5}, capacity: {'oil': 100},   text: 'text' },
+    
+    money1space:      {name: "Cluster", location: 'space', resource: 'money',     base_cost: {'special.rockets': 1, 'balances.money': 10000, 'balances.materials': 0,  'balances.helium': 0}, capacity: {'money': 10000}, text: 'text' },
+    materials1space:  {name: "Dock",    location: 'space', resource: 'materials', base_cost: {'special.rockets': 1, 'balances.money': 0,     'balances.materials': 30, 'balances.helium': 0}, capacity: {'materials': 1000}, text: 'text' },
+    helium1space:     {name: "Chamber", location: 'space', resource: 'helium',    base_cost: {'special.rockets': 1, 'balances.money': 0,     'balances.materials': 0,  'balances.helium': 5}, capacity: {'helium': 100},   text: 'text' },
     
 };
