@@ -18,9 +18,12 @@ export const default_state = {
     special: {rockets: 0, colonizer: 0},
     
     storage:   _.mapValues(storage,   () => { return {level: 0, modifier: 1}; }),
-    buildings: _.mapValues(buildings, () => { return {level: 0, fullness: 0, modifier: 1}; }),
+    buildings: _.mapValues(buildings, () => { return {level: 0, busy: false, fullness: 0, modifier: 1}; }),
     managers:  _.mapValues(managers,  () => { return {hired: false}; }),
     upgrades:  _.mapValues(upgrades,  () => { return {level: 0}; }),
+    
+    constructors: 1,
+    constructing: [],
     
     environment: 'earth',
     space_era: false,

@@ -21,7 +21,7 @@ import {game_name} from './game/core/app_config';
 import {getDefaultState} from './game/core/default_state';
 
 import {storage, calcStorageCost, buyStorage} from './game/knowledge/storage';
-import {buildings, calcBuildCost, buyItem, collectItem} from './game/knowledge/buildings';
+import {buildings, calcBuildCost, buildItem, collectItem} from './game/knowledge/buildings';
 import {managers, hire} from './game/knowledge/managers';
 import {upgrades, calcUpgradeCost, upgrade} from './game/knowledge/upgrades';
 
@@ -237,6 +237,10 @@ class App extends Component {
                                     store.balances[key] = store.storage_limit[key];
                                 });
                                 return store; }
+                        }} state={this.state} gin={this.gin} /></div>
+                        <div className="row-xs filament"><GinButton item={{
+                            name: 'Additional Builder',
+                            onClick: (store) => { store.constructors++; return store; }
                         }} state={this.state} gin={this.gin} /></div>
     
                         { 1 == 0 ?

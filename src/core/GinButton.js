@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {isEnough} from "../bdcgin/Gin";
 import {storage, calcStorageCost, buyStorage} from '../game/knowledge/storage';
-import {buyItem, calcBuildCost, collectItem} from "../game/knowledge/buildings";
+import {buildItem, calcBuildCost, calcBuildDuration, calcBuildPercent, collectItem} from "../game/knowledge/buildings";
 import {hire} from "../game/knowledge/managers";
 import {calcUpgradeCost, upgrade} from "../game/knowledge/upgrades";
 
@@ -92,7 +92,7 @@ export class StorageGinButton extends Component {
         return (
             <GinButton
                 item={{
-                    name:    'Build',
+                    name:    'Expand',
                     cost:    calcStorageCost(this.props.state, this.props.item_key),
                     onClick: (state) => buyStorage(state, this.props.item_key)
                 }}
@@ -107,9 +107,12 @@ export class BuildingGinButton extends Component {
         return (
             <GinButton
                 item={{
-                    name:    'Build',
+                    name:    this.props.state.buildings[this.props.item_key].busy
+                                 ? 'Build ' + calcBuildPercent(this.props.state, this.props.item_key) + '%'
+                                 : 'Build ' + (calcBuildDuration(this.props.state, this.props.item_key)/10).toFixed(0) + ' sec',
                     cost:    calcBuildCost(this.props.state, this.props.item_key),
-                    onClick: (state) => buyItem(state, this.props.item_key)
+                    isDisabled: (state) => this.props.state.buildings[this.props.item_key].busy || this.props.state.constructing.length >= this.props.state.constructors,
+                    onClick: (state) => buildItem(state, this.props.item_key)
                 }}
                 state={this.props.state}
                 gin={this.props.gin}
