@@ -5,12 +5,11 @@ import _ from 'lodash';
 import {isEnough, gainCost} from '../../bdcgin/Gin';
 
 import {storage, calcStorageCapacity} from '../knowledge/storage';
-import {buildings, collectItem} from '../knowledge/buildings';
+import {buildings, finishItem, collectItem} from '../knowledge/buildings';
 
 
 export const rules = {
     matrix_show: { onFrame: (store, params = {}) => { store.matrix_show = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); return store; }},
-    
     
     income: {
         onFrame: (store, params = {}) => {
@@ -33,6 +32,29 @@ export const rules = {
             return store;
         }
     },
+    
+    
+    constructing: {
+        onFrame: (store, params = {}) => {
+            _.each(store.constructing, (task, key) => {
+                if (task.start_frame + task.duration <= store.frame) {
+                    if (task.item_type == 'buildings') {
+                        store = finishItem(store, task.item_key);
+                    }
+                }
+            });
+    
+            _.remove(store.constructing, (task) => task.start_frame + task.duration <= store.frame);
+            
+            return store;
+        },
+        
+        onTick: (store, params = {}) => {
+            
+            return store;
+        }
+    },
+    
     
     
 };
