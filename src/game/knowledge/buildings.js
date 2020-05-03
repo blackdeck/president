@@ -13,10 +13,10 @@ export const calcBuildCost = (store, item_key) => {
         //console.log(item_cost, buildings[item_key].cost_grows, store.buildings[item_key].level);
         // console.log(Math.pow(item_cost, buildings[item_key].cost_grows * store.buildings[item_key].level));
         if (store.buildings[item_key].level > 0 && item_cost > 0) {
-            return (cost * Math.pow(buildings[item_key].cost_grows, store.buildings[item_key].level)).toFixed(0);
+            return Math.ceil(cost * Math.pow(buildings[item_key].cost_grows, store.buildings[item_key].level));
         }
         else {
-            return (cost).toFixed(0);
+            return Math.ceil(cost);
         }
     });
 };
