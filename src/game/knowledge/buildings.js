@@ -8,13 +8,15 @@ export const calcBuildCost = (store, item_key) => {
     
     return _.mapValues(buildings[item_key].base_cost, (item_cost, key) => {
         
+        let cost = item_cost * Math.pow(0.99, store.prestige);
+        
         //console.log(item_cost, buildings[item_key].cost_grows, store.buildings[item_key].level);
         // console.log(Math.pow(item_cost, buildings[item_key].cost_grows * store.buildings[item_key].level));
         if (store.buildings[item_key].level > 0 && item_cost > 0) {
-            return (item_cost * Math.pow(buildings[item_key].cost_grows, store.buildings[item_key].level)).toFixed(0);
+            return (cost * Math.pow(buildings[item_key].cost_grows, store.buildings[item_key].level)).toFixed(0);
         }
         else {
-            return item_cost;
+            return (cost).toFixed(0);
         }
     });
 };
@@ -37,7 +39,7 @@ export const collectItem = (store, item_key) => {
     
     let cost = _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level * store.buildings[item_key].modifier);
     
-    console.log(cost);
+    // console.log(cost);
     
     store = gainCost(store, _.mapValues(cost, (resource, key) => (buildings[item_key].type in store.storage_limit) ? Math.min(resource, store.storage_limit[buildings[item_key].type] - store.balances[buildings[item_key].type]) : resource));
     
@@ -73,7 +75,7 @@ export var buildings = {
     goods3: {name: "Goods3", location: 'earth', tier: 3, type: 'goods', base_cost: {'balances.money': 0,   'balances.goods': 20000,'balances.oil': 0},     cost_grows: 1.47, profit: {'balances.goods': 2500}, base_duration: 80, cycle: 600, text: 'text', isHidden: (store) => store.buildings.money3.level == 0 },
     oil3:   {name: "Oil3",   location: 'earth', tier: 3, type: 'oil',   base_cost: {'balances.money': 0,   'balances.goods': 0,    'balances.oil': 30000}, cost_grows: 1.48, profit: {'balances.oil': 3000},   base_duration: 90, cycle: 900, text: 'text', isHidden: (store) => store.buildings.goods3.level == 0 },
     
-    rocket: {name: "Spaceport", location: 'earth', tier: 4, type: 'rockets',base_cost: {'balances.money': 1000000,   'balances.goods': 100000,    'balances.oil': 10000}, cost_grows: 1.49,  profit: {'special.rockets': 1},   base_duration: 100, cycle: 1200, text: 'text', isHidden: (store) => false },
+    rocket: {name: "Spaceport", location: 'earth', tier: 4, type: 'rockets',base_cost: {'balances.money': 300000,   'balances.goods': 100000,    'balances.oil': 30000}, cost_grows: 1.49,  profit: {'special.rockets': 1},   base_duration: 1000, cycle: 1200, text: 'text', isHidden: (store) => false },
     
     
     money1space:     {name: "Money1",     location: 'space', tier: 1, type: 'materials', base_cost: {'special.rockets': 1, 'balances.money': 100000,     'balances.materials': 0,    'balances.helium': 0},     cost_grows: 1.5,  profit: {'balances.materials': 1},    base_duration: 110, cycle: 60,   text: 'text', isHidden: (store) => false },
@@ -86,7 +88,7 @@ export var buildings = {
     materials3space: {name: "Materials3", location: 'space', tier: 3, type: 'money',     base_cost: {'special.rockets': 1, 'balances.money': 0,          'balances.materials': 5000, 'balances.helium': 0},     cost_grows: 1.57, profit: {'balances.money': 7500},     base_duration: 180, cycle: 1200, text: 'text', isHidden: (store) => store.buildings.money3space.level == 0 },
     helium3space:    {name: "Helium3",    location: 'space', tier: 3, type: 'materials', base_cost: {'special.rockets': 1, 'balances.money': 0,          'balances.materials': 0,    'balances.helium': 10000}, cost_grows: 1.58, profit: {'balances.materials': 7500}, base_duration: 190, cycle: 1800, text: 'text', isHidden: (store) => store.buildings.materials3space.level == 0 },
     
-    colonizer:       {name: "Colonizer",  location: 'space', tier: 4, type: 'colonizer', base_cost: {'special.rockets': 1, 'balances.money': 1000000,   'balances.materials': 100000,    'balances.helium': 10000}, cost_grows: 1.59,  profit: {'special.colonizer': 1},   base_duration: 200, cycle: 1200, text: 'text', isHidden: (store) => false },
+    colonizer:       {name: "Colonizer",  location: 'space', tier: 4, type: 'colonizer', base_cost: {'special.rockets': 1, 'balances.money': 3000000,   'balances.materials': 1000000,    'balances.helium': 300000}, cost_grows: 1.59,  profit: {'special.colonizer': 1},   base_duration: 2000, cycle: 1200, text: 'text', isHidden: (store) => false },
     
     
 };

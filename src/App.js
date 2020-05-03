@@ -15,7 +15,7 @@ import GinGameMenu from './bdcgin/GinGameMenu';
 import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, HireGinButton, UpGinButton } from "./core/GinButton";
 
 import {rules} from './game/core/rules';
-import {pick} from './game/helpers';
+import {pick, calcPrestige, reset} from './game/helpers';
 
 import {game_name} from './game/core/app_config';
 import {getDefaultState} from './game/core/default_state';
@@ -98,12 +98,12 @@ class App extends Component {
                         <div className="row-xs filament">{state.balances.oil}   Oil</div>
                         <div className="row-xs filament">filed: {(state.balances.oil/state.storage_limit.oil*100).toFixed(0)}%</div>
                     </div> : ''}
-                {state.buildings.materials1space.level > 0 && state.environment == 'space' ?
+                {state.buildings.money1space.level > 0 && state.environment == 'space' ?
                     <div className="col-xs flex-element filament">
                         <div className="row-xs filament">{state.balances.materials} Materials</div>
                         <div className="row-xs filament">filed: {(state.balances.materials/state.storage_limit.materials*100).toFixed(0)}%</div>
                     </div> : ''}
-                {state.buildings.helium1space.level > 0 && state.environment == 'space' ?
+                {state.buildings.materials1space.level > 0 && state.environment == 'space' ?
                     <div className="col-xs flex-element filament">
                         <div className="row-xs filament">{state.balances.helium}   Helium</div>
                         <div className="row-xs filament">filed: {(state.balances.helium/state.storage_limit.helium*100).toFixed(0)}%</div>
@@ -124,6 +124,33 @@ class App extends Component {
             <div className="filament">
                 <div className="flex-container-col panel">
                     <h4 className="slim">Shop</h4>
+                    <div className="col-xs flex-element filament">
+                        <div className="row-xs filament"><h3>Cheats!</h3></div>
+                        <div className="row-xs filament"><GinButton item={{
+                            name: 'Add Million Dollars',
+                            onClick: (store) => { store.balances.money += 1000000; return store; }
+                        }} state={this.state} gin={this.gin} /></div>
+                        <div className="row-xs filament"><GinButton item={{
+                            name: 'Fill Storage',
+                            onClick: (store) => {
+                                _.each(store.balances, (value, key) => {
+                                    store.balances[key] = store.storage_limit[key];
+                                });
+                                return store; }
+                        }} state={this.state} gin={this.gin} /></div>
+                        <div className="row-xs filament"><GinButton item={{
+                            name: 'Additional Builder',
+                            onClick: (store) => { store.constructors++; return store; }
+                        }} state={this.state} gin={this.gin} /></div>
+        
+                        { 1 == 0 ?
+                            <div className="row-xs filament"><GinButton item={{
+                                name: 'Broke The Game',
+                                onClick: (store) => { store.balances.money += 100000000; store.balances.goods += 10000000; store.balances.oil += 1000000; return store; }
+                            }} state={this.state} gin={this.gin} /></div>
+                            : '' }
+    
+                    </div>
                 </div>
             </div>;
         
@@ -225,30 +252,18 @@ class App extends Component {
                 <div className="flex-container-col panel">
                     <h4 className="slim">Setting</h4>
                     <div className="col-xs flex-element filament">
-                        <div className="row-xs filament"><h3>Cheats!</h3></div>
+                        <div className="row-xs filament"><h3>Reset</h3></div>
+                        
+                        <div className="row-xs filament">
+                            When reset, the game will start again and you will get a discount to the base cost of all buildings. The size of the discount depends on the current number of buildings.
+                        </div>
+                        <div className="row-xs filament">
+                            <h4>Current discount {state.prestige}%</h4>
+                        </div>
                         <div className="row-xs filament"><GinButton item={{
-                            name: 'Add Million Dollars',
-                            onClick: (store) => { store.balances.money += 1000000; return store; }
+                            name: 'Reset +' + calcPrestige(state) + '%',
+                            onClick: reset
                         }} state={this.state} gin={this.gin} /></div>
-                        <div className="row-xs filament"><GinButton item={{
-                            name: 'Fill Storage',
-                            onClick: (store) => {
-                                _.each(store.balances, (value, key) => {
-                                    store.balances[key] = store.storage_limit[key];
-                                });
-                                return store; }
-                        }} state={this.state} gin={this.gin} /></div>
-                        <div className="row-xs filament"><GinButton item={{
-                            name: 'Additional Builder',
-                            onClick: (store) => { store.constructors++; return store; }
-                        }} state={this.state} gin={this.gin} /></div>
-    
-                        { 1 == 0 ?
-                            <div className="row-xs filament"><GinButton item={{
-                                name: 'Broke The Game',
-                                onClick: (store) => { store.balances.money += 100000000; store.balances.goods += 10000000; store.balances.oil += 1000000; return store; }
-                            }} state={this.state} gin={this.gin} /></div>
-                            : '' }
                         
                     </div>
                 </div>

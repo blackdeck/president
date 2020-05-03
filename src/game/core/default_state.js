@@ -28,6 +28,8 @@ export const default_state = {
     environment: 'earth',
     space_era: false,
     
+    prestige: 0,
+    
     
     
     game_speed: 1000, // 1000
