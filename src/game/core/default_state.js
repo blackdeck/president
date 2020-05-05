@@ -28,6 +28,9 @@ export const default_state = {
     environment: 'earth',
     space_era: false,
     
+    event: false,
+    last_event_tick: 0,
+    
     prestige: 0,
     
     

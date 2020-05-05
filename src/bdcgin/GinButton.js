@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 import _ from 'lodash';
 
-import {isEnough} from "../bdcgin/Gin";
+import {isEnough} from "./Gin";
 
 import {storage, calcStorageCost, buyStorage} from '../game/knowledge/storage';
 import {buildings, buildItem, calcBuildCost, calcBuildDuration, calcProfit, calcBuildPercent, collectItem} from "../game/knowledge/buildings";

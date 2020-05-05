@@ -4,15 +4,15 @@ import Select from 'react-select';
 import Fullscreen from "react-full-screen";
 import _ from 'lodash';
 
-import './css/weapon_selector.css';
 import './css/header.css';
 import './css/footer.css';
+import './css/event.css';
 import './css/App.css';
 
 
 import {Gin, isEnough, drawCost} from './bdcgin/Gin';
 import GinGameMenu from './bdcgin/GinGameMenu';
-import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, HireGinButton, UpGinButton } from "./core/GinButton";
+import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, HireGinButton, UpGinButton } from "./bdcgin/GinButton";
 
 import {rules} from './game/core/rules';
 import {pick, calcPrestige, reset} from './game/helpers';
@@ -24,6 +24,7 @@ import {storage, calcStorageCost, buyStorage} from './game/knowledge/storage';
 import {buildings, calcBuildCost, buildItem, collectItem} from './game/knowledge/buildings';
 import {managers, hire} from './game/knowledge/managers';
 import {upgrades, calcUpgradeCost, upgrade} from './game/knowledge/upgrades';
+import {confirmEvent, passEvent} from './game/knowledge/events';
 
 
 
@@ -63,24 +64,6 @@ class App extends Component {
     render() {
         let state = this.state;
     
-    
-        const intro_subcomponent =
-            <div className="filament">
-                <div className="panel">
-                    <h3>Welcome, new president!</h3>
-                    <h4>The party in honor of your inauguration went gloriously.</h4>
-                    <h4>It's time to get down to duty.</h4>
-                </div>
-                <div className="panel">
-                    <button className="btn btn-lg" onClick={() => {
-                        //this.setState({isFull: true});
-                        this.changeTab('building');
-                    }} title='Arena'>Start Build Your Country</button>
-                </div>
-                <h4 className="panel">
-                    Disclaimer: the game on the early stages of development, bugs are possible! Developers will be grateful if in case of any problem you write to the Support.
-                </h4>
-            </div>;
         
         const header_subcomponent =
             <div className="header flex-container-row col">
@@ -117,7 +100,47 @@ class App extends Component {
                         }} state={this.state} gin={this.gin} /></div>
                         <div className="row-xs filament">Rockets: {state.special.rockets.toFixed(0)}</div>
                     </div> : ''}
-                    
+            </div>;
+        
+        
+        const intro_subcomponent =
+            <div className="filament">
+                <div className="panel">
+                    <h3>Welcome, new president!</h3>
+                    <h4>The party in honor of your inauguration went gloriously.</h4>
+                    <h4>It's time to get down to duty.</h4>
+                </div>
+                <div className="panel">
+                    <button className="btn btn-lg" onClick={() => {
+                        //this.setState({isFull: true});
+                        this.changeTab('building');
+                    }} title='Arena'>Start Build Your Country</button>
+                </div>
+                <h4 className="panel">
+                    Disclaimer: the game on the early stages of development, bugs are possible! Developers will be grateful if in case of any problem you write to the Support.
+                </h4>
+            </div>;
+        
+    
+        const event_trigger_subcomponent =
+            <div className="event_trigger filament" onClick={() => this.gin.onClick({onClick: (store) => { store.event.opened = true; return store; }})}>
+                <h2>Event!</h2>
+            </div>;
+    
+        const event_popup_subcomponent =
+            <div className="event_popup filament">
+                <div className="panel">
+                    <h3>{this.state.event.name}</h3>
+                    <h4>{this.state.event.text}</h4>
+                    <GinButton item={{
+                        name: 'Confirm',
+                        onClick: confirmEvent,
+                    }} state={this.state} gin={this.gin} />
+                    <GinButton item={{
+                        name: 'Decline',
+                        onClick: passEvent,
+                    }} state={this.state} gin={this.gin} />
+                </div>
             </div>;
     
         const shop_subcomponent =
@@ -138,10 +161,13 @@ class App extends Component {
                                 });
                                 return store; }
                         }} state={this.state} gin={this.gin} /></div>
-                        <div className="row-xs filament"><GinButton item={{
-                            name: 'Additional Builder',
-                            onClick: (store) => { store.constructors++; return store; }
-                        }} state={this.state} gin={this.gin} /></div>
+                        <div className="row-xs filament">
+                            <GinButton item={{
+                                name: 'Additional Builder',
+                                onClick: (store) => { store.constructors++; return store; }
+                                }} state={this.state} gin={this.gin} />
+                            Current builders: {this.state.constructors}
+                        </div>
         
                         { 1 == 0 ?
                             <div className="row-xs filament"><GinButton item={{
@@ -245,16 +271,15 @@ class App extends Component {
                 </div>
             </div>;
         
-        const settings_subcomponent =
+        const reputation_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h4 className="slim">Setting</h4>
+                    <h4 className="slim">Reputation</h4>
                     <div className="col-xs flex-element filament">
-                        <div className="row-xs filament"><h3>Reset</h3></div>
+                        <div className="row-xs filament"><h4>Reset</h4></div>
                         
-                        <div className="row-xs filament">
-                            When reset, the game will start again and you will get a discount to the base cost of all buildings. The size of the discount depends on the current number of buildings.
-                        </div>
+                        <div className="row-xs filament">When reset, the game will start again and you will get a discount to the base cost of all buildings.</div>
+                        <div className="row-xs filament">The size of the discount depends on the current number of buildings.</div>
                         <div className="row-xs filament">
                             <h4>Current discount {state.prestige}%</h4>
                         </div>
@@ -273,7 +298,7 @@ class App extends Component {
                 <span className="col-xs filament"><a onClick={() => { this.changeTab('upgrade'); }}  title='Upgrade'>   Upgrade</a></span>
                 <span className="col-xs filament"><a onClick={() => { this.changeTab('building'); }} title='Building'>  Building</a></span>
                 <span className="col-xs filament"><a onClick={() => { this.changeTab('managers'); }} title='Managers'>  Managers</a></span>
-                <span className="col-xs filament"><a onClick={() => { this.changeTab('settings'); }} title='Settings'>   Setting</a></span>
+                <span className="col-xs filament"><a onClick={() => { this.changeTab('reputation'); }} title='Reputation'>   Reputation</a></span>
             </div>;
         
         
@@ -291,6 +316,13 @@ class App extends Component {
                         {this.state.tab === 'intro' ?
                             intro_subcomponent
                             : ''}
+                            
+                        {this.state.event !== false && this.state.event.opened === false ?
+                            event_trigger_subcomponent
+                            : ''}
+                        {this.state.event !== false && this.state.event.opened === true ?
+                            event_popup_subcomponent
+                            : ''}
     
                         <div style={{width: '100%', height: '70px'}}></div>
                         
@@ -306,8 +338,8 @@ class App extends Component {
                         {this.state.tab === 'managers' ?
                             managers_subcomponent
                             : ''}
-                        {this.state.tab === 'settings' ?
-                            settings_subcomponent
+                        {this.state.tab === 'reputation' ? 
+                            reputation_subcomponent
                             : ''}
 
                         <div style={{width: '100%', height: '40px'}}></div>
