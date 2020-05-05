@@ -33,11 +33,16 @@ export const calcBuildPercent = (store, item_key) => {
 };
 
 
+export const calcProfit = (store, item_key) => {
+    return _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level * store.buildings[item_key].modifier);
+};
+
+
 export const collectItem = (store, item_key) => {
     // console.log(item_key, buildings[item_key].profit, store.buildings[item_key].level);
     store.buildings[item_key].fullness = 0;
     
-    let cost = _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level * store.buildings[item_key].modifier);
+    let cost = calcProfit(store, item_key);
     
     // console.log(cost);
     

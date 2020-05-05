@@ -182,22 +182,20 @@ class App extends Component {
                 <div className="flex-container-col panel">
                     <h4 className="slim">Building</h4>
                     <h5 className="slim">Storage</h5>
-                    {_.map(pick(state, storage), (item, key) =>
-                        <div className="flex-element flex-container-row panel filament" key={key}>
-                            <div className="flex-element flex-container-row slim">
-                                <div className="flex-element slim"><h3 className="slim">{state.storage[key].level}</h3></div>
-                                <div className="flex-element slim"><h5>{item.name}</h5></div>
+                    <div className="flex-container-row slim">
+                        {_.map(pick(state, storage), (item, key) =>
+                            <div className="flex-element flex-container-row panel filament" key={key}>
+                                <div className="flex-element flex-container-col slim">
+                                    <div className="flex-element slim"><h3 className="slim">{state.storage[key].level}</h3></div>
+                                    <div className="flex-element">Fullness {state.balances[item.resource]}/{state.storage_limit[item.resource]} ({(state.balances[item.resource]/state.storage_limit[item.resource]*100).toFixed(2)}%)</div>
+                                </div>
+                                <div className="flex-element">
+                                    <div className="flex-element"><StorageGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
+                                    <div className="flex-element">Cost: {drawCost(calcStorageCost(state, key))}</div>
+                                </div>
                             </div>
-                            <div className="flex-element flex-container-col slim">
-                                <div className="flex-element">Fullness</div>
-                                <div className="flex-element">{state.balances[item.resource]}/{state.storage_limit[item.resource]} ({(state.balances[item.resource]/state.storage_limit[item.resource]*100).toFixed(2)}%)</div>
-                            </div>
-                            <div className="flex-element">
-                                <div className="flex-element"><StorageGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
-                                <div className="flex-element">Cost: {drawCost(calcStorageCost(state, key))}</div>
-                            </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                     
                     <h5 className="slim">Industries</h5>
                     {_.map(pick(state, buildings), (item, key) =>
