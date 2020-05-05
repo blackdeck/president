@@ -29,17 +29,17 @@ export var managers = {
     rocket:   {name: "Filon Musk", location: 'earth', cost: {'balances.money': 1000000,  'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.rocket.level == 0 },
     
     
-    money1space:     {name: "Money1Space", location: 'space', cost: {'balances.money': 100,     'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.money1space.level == 0 },
-    materials1space: {name: "Goods1Space", location: 'space', cost: {'balances.money': 500,     'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.materials1space.level == 0 },
-    helium1space:    {name: "Oil1Space",   location: 'space', cost: {'balances.money': 2500,     'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.helium1space.level == 0 },
-    money2space:     {name: "Money2Space", location: 'space', cost: {'balances.money': 10000,    'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.money2space.level == 0 },
-    materials2space: {name: "Goods2Space", location: 'space', cost: {'balances.money': 50000,    'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.materials2space.level == 0 },
-    helium2space:    {name: "Oil2Space",   location: 'space', cost: {'balances.money': 250000,    'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.helium2space.level == 0 },
-    money3space:     {name: "Money3Space", location: 'space', cost: {'balances.money': 1000000,   'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.money3space.level == 0 },
-    materials3space: {name: "Goods3Space", location: 'space', cost: {'balances.money': 5000000,   'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.materials3space.level == 0 },
-    helium3space:    {name: "Oil3Space",   location: 'space', cost: {'balances.money': 10000000,  'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.helium3space.level == 0 },
+    money1space:     {name: "Money1Space", location: 'space', cost: {'balances.money': 1000,     'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.money1space.level == 0 },
+    materials1space: {name: "Goods1Space", location: 'space', cost: {'balances.money': 5000,     'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.materials1space.level == 0 },
+    helium1space:    {name: "Oil1Space",   location: 'space', cost: {'balances.money': 25000,     'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.helium1space.level == 0 },
+    money2space:     {name: "Money2Space", location: 'space', cost: {'balances.money': 100000,    'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.money2space.level == 0 },
+    materials2space: {name: "Goods2Space", location: 'space', cost: {'balances.money': 500000,    'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.materials2space.level == 0 },
+    helium2space:    {name: "Oil2Space",   location: 'space', cost: {'balances.money': 2500000,    'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.helium2space.level == 0 },
+    money3space:     {name: "Money3Space", location: 'space', cost: {'balances.money': 10000000,   'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.money3space.level == 0 },
+    materials3space: {name: "Goods3Space", location: 'space', cost: {'balances.money': 50000000,   'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.materials3space.level == 0 },
+    helium3space:    {name: "Oil3Space",   location: 'space', cost: {'balances.money': 100000000,  'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.helium3space.level == 0 },
     
-    colonizer:       {name: "St. Anislav Lem", location: 'space', cost: {'balances.money': 10000000,  'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.colonizer.level == 0 },
+    colonizer:       {name: "St. Anislav Lem", location: 'space', cost: {'balances.money': 100000000,  'balances.goods': 0,    'balances.oil': 0},      text: 'text', isHidden: (store) => store.buildings.colonizer.level == 0 },
     
     
     
