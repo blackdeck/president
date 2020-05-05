@@ -110,7 +110,7 @@ class App extends Component {
                     </div> : ''}
     
                 {state.buildings.rocket.level > 0 ?
-                    <div className="col-xs  flex-element filament">
+                    <div className="col-xs flex-element filament">
                         <div className="row-xs filament"><GinButton item={{
                             name: state.environment == 'earth' ? 'Space' : 'Earth',
                             onClick: (state) => { state.environment = state.environment == 'earth' ? 'space' : 'earth'; return state; }
@@ -292,6 +292,8 @@ class App extends Component {
                             intro_subcomponent
                             : ''}
     
+                        <div style={{width: '100%', height: '70px'}}></div>
+                        
                         {this.state.tab === 'shop' ?
                             shop_subcomponent
                             : ''}
@@ -308,7 +310,7 @@ class App extends Component {
                             settings_subcomponent
                             : ''}
 
-                        <div style={{width: '100%', height: '10px'}}></div>
+                        <div style={{width: '100%', height: '40px'}}></div>
     
                         {this.state.tab !== 'intro' ?
                             footer_subcomponent

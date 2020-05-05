@@ -1,16 +1,18 @@
 .header {
     box-sizing: border-box;
-    padding: 10px;
+    padding: 2px;
     background-color:rgba(42,0,0,0.666);
     color: #BCC5D6;
     text-align: center;
 /*font-family: Helvetica, Arial, Sans-Serif;*/
     font-weight: 100;
     width: 100%;
-    /* position:fixed; */
+    position:fixed;
     top:0;
-    /* z-index:50000; */
-    font-size: 18px;
+    z-index:50000;
+    font-size: 14px;
+    max-width: 700px;
+    max-height: 70px;
 }
 
 .header a {
