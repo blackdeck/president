@@ -284,7 +284,7 @@ class App extends Component {
                 enabled={this.state.isFull}
                 onChange={isFull => this.gin.setState({isFull})}
             >
-                <div className="App">
+                <div className="App" style={{backgroundImage: 'url(/bg-' + state.environment + '.png)'}}>
                     <div className="filament content_container" role="main">
                         {this.state.tab !== 'intro' ?
                             header_subcomponent
