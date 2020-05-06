@@ -2,6 +2,7 @@
 import _ from 'lodash';
 
 import {isEnough, gainCost} from '../../bdcgin/Gin';
+import {checkStorageVolume} from './storage';
 
 export const calcBuildCost = (store, item_key) => {
     // console.log(item_key, store.buildings, store.buildings[item_key]);
@@ -33,15 +34,17 @@ export const calcBuildPercent = (store, item_key) => {
 };
 
 
+export const calcProfit = (store, item_key) => {
+    return _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level * store.buildings[item_key].modifier);
+};
+
 export const collectItem = (store, item_key) => {
     // console.log(item_key, buildings[item_key].profit, store.buildings[item_key].level);
     store.buildings[item_key].fullness = 0;
     
-    let cost = _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level * store.buildings[item_key].modifier);
+    let cost = calcProfit(store, item_key);
     
-    // console.log(cost);
-    
-    store = gainCost(store, _.mapValues(cost, (resource, key) => (buildings[item_key].type in store.storage_limit) ? Math.min(resource, store.storage_limit[buildings[item_key].type] - store.balances[buildings[item_key].type]) : resource));
+    store = gainCost(store, checkStorageVolume(store, cost));
     
     return store;
 };
@@ -81,7 +84,7 @@ export var buildings = {
     money1space:     {name: "Space Elevator",   location: 'space', tier: 4, type: 'materials', base_cost: {'special.rockets': 1, 'balances.money': 100000,     'balances.materials': 0,    'balances.helium': 0},     cost_grows: 1.5,  profit: {'balances.materials': 1},    base_duration: 110, cycle: 60,   text: 'text', isHidden: (store) => false },
     materials1space: {name: "Helium Mine",      location: 'space', tier: 4, type: 'helium',    base_cost: {'special.rockets': 1, 'balances.money': 0,          'balances.materials': 5,    'balances.helium': 0},     cost_grows: 1.51, profit: {'balances.helium': 1},       base_duration: 120, cycle: 30,   text: 'text', isHidden: (store) => store.buildings.money1space.level == 0 },
     helium1space:    {name: "Fusion Reactor",   location: 'space', tier: 4, type: 'money',     base_cost: {'special.rockets': 1, 'balances.money': 0,          'balances.materials': 0,    'balances.helium': 10},    cost_grows: 1.52, profit: {'balances.money': 1},        base_duration: 130, cycle: 10,   text: 'text', isHidden: (store) => store.buildings.materials1space.level == 0 },
-    money2space:     {name: "Money2",           location: 'space', tier: 5, type: 'money',     base_cost: {'special.rockets': 1, 'balances.money': 1250000,    'balances.materials': 0,    'balances.helium': 0},     cost_grows: 1.53, profit: {'balances.money': 40},       base_duration: 140, cycle: 100,  text: 'text', isHidden: (store) => store.buildings.helium1space.level == 0 },
+    money2space:     {name: "Data Node",        location: 'space', tier: 5, type: 'money',     base_cost: {'special.rockets': 1, 'balances.money': 1250000,    'balances.materials': 0,    'balances.helium': 0},     cost_grows: 1.53, profit: {'balances.money': 40},       base_duration: 140, cycle: 100,  text: 'text', isHidden: (store) => store.buildings.helium1space.level == 0 },
     materials2space: {name: "Robotic Factory",  location: 'space', tier: 5, type: 'materials', base_cost: {'special.rockets': 1, 'balances.money': 0,          'balances.materials': 200,  'balances.helium': 0},     cost_grows: 1.54, profit: {'balances.materials': 50},   base_duration: 150, cycle: 200,  text: 'text', isHidden: (store) => store.buildings.money2space.level == 0 },
     helium2space:    {name: "Accelerator",      location: 'space', tier: 5, type: 'helium',    base_cost: {'special.rockets': 1, 'balances.money': 0,          'balances.materials': 0,    'balances.helium': 300},   cost_grows: 1.55, profit: {'balances.helium': 70},      base_duration: 160, cycle: 400,  text: 'text', isHidden: (store) => store.buildings.materials2space.level == 0 },
     money3space:     {name: "Helium Condenser", location: 'space', tier: 6, type: 'helium',    base_cost: {'special.rockets': 1, 'balances.money': 15000000,   'balances.materials': 0,    'balances.helium': 0},     cost_grows: 1.56, profit: {'balances.helium': 200},     base_duration: 170, cycle: 600,  text: 'text', isHidden: (store) => store.buildings.helium2space.level == 0 },

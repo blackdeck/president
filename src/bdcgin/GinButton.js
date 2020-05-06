@@ -1,8 +1,12 @@
 
 import React, { Component } from 'react';
-import {isEnough} from "../bdcgin/Gin";
+
+import _ from 'lodash';
+
+import {isEnough} from "./Gin";
+
 import {storage, calcStorageCost, buyStorage} from '../game/knowledge/storage';
-import {buildItem, calcBuildCost, calcBuildDuration, calcBuildPercent, collectItem} from "../game/knowledge/buildings";
+import {buildings, buildItem, calcBuildCost, calcBuildDuration, calcProfit, calcBuildPercent, collectItem} from "../game/knowledge/buildings";
 import {hire} from "../game/knowledge/managers";
 import {calcUpgradeCost, upgrade} from "../game/knowledge/upgrades";
 
@@ -75,7 +79,7 @@ export class CollectGinButton extends Component {
         return (
             <GinButton
                 item={{
-                    name: 'Collect',
+                    name: 'Collect ' + _.values(calcProfit(this.props.state, this.props.item_key))[0] + ' ' + buildings[this.props.item_key].type,
                     isDisabled: (state) => state.buildings[this.props.item_key].fullness < this.props.item.cycle,
                     cost: false,
                     onClick: (state) => collectItem(state, this.props.item_key)

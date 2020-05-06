@@ -21,6 +21,12 @@ export const calcStorageCost = (store, item_key) => {
     });
 };
 
+export const checkStorageVolume = (store, cost) => {
+    return _.mapValues(cost, (resource, raw_key) => {
+        let key = _.last(raw_key.split('.'));
+        return (key in store.storage_limit) ? Math.min(resource, store.storage_limit[key] - store.balances[key]) : resource
+    });
+};
 
 export const calcStorageCapacity = (store, item_key) => {
     // console.log(item_key, buildings[item_key].profit, store.buildings[item_key].level);
