@@ -1,6 +1,8 @@
 
 import _ from 'lodash';
 
+import {isEnough, chargeCost, gainCost} from '../../bdcgin/Gin';
+import {checkStorageVolume} from './storage';
 
 export const genEvent = (store) => {
     let event = _.sample(events);
@@ -9,6 +11,10 @@ export const genEvent = (store) => {
     event.opened = false;
     
     return event;
+};
+
+export const checkDisabled = (store) => {
+    return events[store.event.key].isDisabled(store);
 };
 
 export const confirmEvent = (store) => {
@@ -27,5 +33,7 @@ export const passEvent = (store) => {
 
 
 export var events = {
-    first_event: {key: 'first_event', name: 'First Event', text: 'First Text', onConfirm: (state) => { console.log('First Event'); return state; }},
+    first_event: {key: 'first_event', name: 'First Event', text: 'First Text',                                           isDisabled: (store) => { return false; },                         onConfirm: (store) => { console.log('First Event'); return store; }},
+    sell_rocket: {key: 'sell_rocket', name: 'Sell Rocket', text: 'Do you want to sell a rocket for a million?',          isDisabled: (store) => { return store.special.rockets < 1; },     onConfirm: (store) => { store = chargeCost({'special.rockets': 1}); store = gainCost(store, checkStorageVolume(store, {'balances.money': 1000000})); console.log('Second Event'); return store; }},
+    buy_rocket:  {key: 'buy_rocket',  name: 'Buy Rocket',  text: 'Do you want to buy a rocket for a hundred thousand?',  isDisabled: (store) => { return store.balances.money < 100000; }, onConfirm: (store) => { store = chargeCost({'balances.money': 100000}); store = gainCost(store, {'special.rockets': 1}); console.log('Third Event'); return store; }},
 };

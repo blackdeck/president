@@ -1,7 +1,7 @@
 
 import _ from 'lodash';
 
-import {buildings, collectItem} from '../knowledge/buildings';
+import {buildings, collectItem} from './buildings';
 
 export const hire = (store, item_key) => {
     store.managers[item_key].hired = true;

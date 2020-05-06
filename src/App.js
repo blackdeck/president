@@ -24,7 +24,7 @@ import {storage, calcStorageCost, buyStorage} from './game/knowledge/storage';
 import {buildings, calcBuildCost, buildItem, collectItem} from './game/knowledge/buildings';
 import {managers, hire} from './game/knowledge/managers';
 import {upgrades, calcUpgradeCost, upgrade} from './game/knowledge/upgrades';
-import {confirmEvent, passEvent} from './game/knowledge/events';
+import {checkDisabled, confirmEvent, passEvent} from './game/knowledge/events';
 
 
 
@@ -134,6 +134,7 @@ class App extends Component {
                     <h4>{this.state.event.text}</h4>
                     <GinButton item={{
                         name: 'Confirm',
+                        isDisabled: checkDisabled,
                         onClick: confirmEvent,
                     }} state={this.state} gin={this.gin} />
                     <GinButton item={{
@@ -192,7 +193,7 @@ class App extends Component {
                             </div>
                             <div className="flex-element">
                                 <div className="flex-element">Affected:</div>
-                                <div className="flex-element">{drawCost(item.affected)}</div>
+                                <div className="flex-element">{drawCost(item.affected, true)}</div>
                             </div>
                             <div className="flex-element">
                                 <div className="flex-element"><UpGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>

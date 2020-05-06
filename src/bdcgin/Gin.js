@@ -205,11 +205,11 @@ export function gainCost(store, cost) {
     return store;
 }
 
-export function drawCost(cost) {
+export function drawCost(cost, raw = false) {
     let text = '';
     _.each(cost, (value, resource) => {
         if (value > 0) {
-            text += resource + ': ' + value + ' ';
+            text += (raw ? resource : _.last(resource.split('.'))) + ': ' + value + ' ';
         }
     });
     return text;
