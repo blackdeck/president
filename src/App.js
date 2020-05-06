@@ -149,26 +149,34 @@ class App extends Component {
                 <div className="flex-container-col panel">
                     <h4 className="slim">Shop</h4>
                     <div className="col-xs flex-element filament">
-                        <div className="row-xs filament"><h3>Cheats!</h3></div>
+                        <div className="row-xs filament"><GinButton item={{
+                            name: 'Add 100 crystals',
+                            isDisabled: (store) => store.donated,
+                            onClick: (store) => { store.donate += 100; store.donated = true; return store; }
+                        }} state={this.state} gin={this.gin} /></div>
+                        <div className="row-xs filament">You have {this.state.donate} crystals</div>
                         <div className="row-xs filament"><GinButton item={{
                             name: 'Add Million Dollars',
+                            cost: {donate: 11},
                             onClick: (store) => { store.balances.money += 1000000; return store; }
-                        }} state={this.state} gin={this.gin} /></div>
+                        }} state={this.state} gin={this.gin} /> Cost: 1 Crystals</div>
                         <div className="row-xs filament"><GinButton item={{
                             name: 'Fill Storage',
+                            cost: {donate: 10},
                             onClick: (store) => {
                                 _.each(store.balances, (value, key) => {
                                     store.balances[key] = store.storage_limit[key];
                                 });
                                 return store; }
-                        }} state={this.state} gin={this.gin} /></div>
+                        }} state={this.state} gin={this.gin} /> Cost: 10 Crystals</div>
                         <div className="row-xs filament">
                             <GinButton item={{
                                 name: 'Additional Builder',
+                                cost: {donate: 25},
                                 onClick: (store) => { store.constructors++; return store; }
-                                }} state={this.state} gin={this.gin} />
-                            Current builders: {this.state.constructors}
+                                }} state={this.state} gin={this.gin} /> Cost: 25 Crystals
                         </div>
+                        <div className="row-xs filament">Current builders: {this.state.constructors}</div>
         
                         { 1 == 0 ?
                             <div className="row-xs filament"><GinButton item={{

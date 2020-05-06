@@ -16,6 +16,10 @@ export const default_state = {
     balances:       {money: 0, goods: 0, oil: 0, materials: 0, helium: 0},
     storage_limit:  {money: 0, goods: 0, oil: 0, materials: 0, helium: 0},
     special: {rockets: 0, colonizer: 0},
+    donated: false,
+    donate: 0,
+    prestige: 0,
+    
     
     storage:   _.mapValues(storage,   () => { return {level: 0, modifier: 1}; }),
     buildings: _.mapValues(buildings, () => { return {level: 0, busy: false, fullness: 0, modifier: 1}; }),
@@ -30,8 +34,6 @@ export const default_state = {
     
     event: false,
     last_event_tick: 0,
-    
-    prestige: 0,
     
     
     
