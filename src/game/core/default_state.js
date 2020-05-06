@@ -44,7 +44,11 @@ export const default_state = {
     tick: 0,
     game_paused: true,
     game_end: false,
-    game_end_score: 0
+    game_end_score: 0,
+    
+    debug: {
+        performance: false
+    },
 };
 
 
