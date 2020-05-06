@@ -17,12 +17,7 @@ export class Gin {
             _id_counter: 0,
             _callbacks: [],
             debug: {
-                performance: true,
-                own_project: false,
-                project_reward: false,
-                gin_ticks: true,
-                exchange: false,
-                projects_generation: true
+                performance: true
             },
         };
 

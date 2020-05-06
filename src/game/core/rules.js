@@ -7,6 +7,7 @@ import {isEnough, gainCost} from '../../bdcgin/Gin';
 import {storage, calcStorageCapacity} from '../knowledge/storage';
 import {buildings, finishItem, collectItem} from '../knowledge/buildings';
 import {events, genEvent} from '../knowledge/events';
+import {managers} from '../knowledge/managers';
 
 
 export const rules = {
@@ -14,15 +15,24 @@ export const rules = {
     
     income: {
         onFrame: (store, params = {}) => {
+            let automated_buildings = [];
+            _.each(store.managers, (manager, key) => {
+                if (manager.hired === true) {
+                    _.each(managers[key].automation, (automated_building) => {
+                        automated_buildings.push(automated_building);
+                    })
+                }
+            });
+            
+            
             _.each(store.buildings, (building, key) => {
                 if (building.level > 0 && store.buildings[key].fullness < buildings[key].cycle) {
                     store.buildings[key].fullness++;
-                    
-                    // /* AUTOMATION
-                    if (store.buildings[key].fullness >= buildings[key].cycle && store.managers[key].hired) {
-                        store = collectItem(store, key);
-                    }
-                    // */
+                }
+    
+                // /* AUTOMATION
+                if (store.buildings[key].fullness >= buildings[key].cycle && automated_buildings.includes(key)) { // store.managers[key].hired
+                    store = collectItem(store, key);
                 }
             });
             return store;
