@@ -195,7 +195,7 @@ class App extends Component {
                     <h4 className="slim">Upgrades</h4>
                     {_.map(pick(state, upgrades), (item, key) =>
                         <div className="flex-element flex-container-row panel filament" key={key}>
-                            <div className="flex-element flex-container-row slim">
+                            <div className="flex-element flex-container-col slim">
                                 <div className="flex-element slim"><h3 className="slim">{state.upgrades[key].level}</h3></div>
                                 <div className="flex-element slim"><h5>{item.name}</h5></div>
                             </div>
