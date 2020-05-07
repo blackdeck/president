@@ -12,7 +12,7 @@ import './css/App.css';
 
 import {Gin, isEnough, drawCost} from './bdcgin/Gin';
 import GinGameMenu from './bdcgin/GinGameMenu';
-import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, HireGinButton, UpGinButton } from "./bdcgin/GinButton";
+import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, HireGinButton, FireGinButton, UpGinButton } from "./bdcgin/GinButton";
 
 import {rules} from './game/core/rules';
 import {pick, calcPrestige, reset} from './game/helpers';
@@ -21,7 +21,7 @@ import {game_name} from './game/core/app_config';
 import {getDefaultState} from './game/core/default_state';
 
 import {storage, calcStorageCost, buyStorage} from './game/knowledge/storage';
-import {buildings, calcBuildCost, buildItem, collectItem} from './game/knowledge/buildings';
+import {buildings, calcBuildCost, calcCycle, buildItem, collectItem} from './game/knowledge/buildings';
 import {managers, hire} from './game/knowledge/managers';
 import {upgrades, calcUpgradeCost, upgrade} from './game/knowledge/upgrades';
 import {checkDisabled, confirmEvent, passEvent} from './game/knowledge/events';
@@ -97,7 +97,7 @@ class App extends Component {
                         <div className="row-xs filament"><GinButton item={{
                             name: state.environment == 'earth' ? 'Space' : 'Earth',
                             onClick: (state) => { state.environment = state.environment == 'earth' ? 'space' : 'earth'; return state; }
-                        }} state={this.state} gin={this.gin} /></div>
+                        }} state={state} gin={this.gin} /></div>
                         <div className="row-xs filament">Rockets: {state.special.rockets.toFixed(0)}</div>
                     </div> : ''}
             </div>;
@@ -130,17 +130,17 @@ class App extends Component {
         const event_popup_subcomponent =
             <div className="event_popup filament">
                 <div className="panel">
-                    <h3>{this.state.event.name}</h3>
-                    <h4>{this.state.event.text}</h4>
+                    <h3>{state.event.name}</h3>
+                    <h4>{state.event.text}</h4>
                     <GinButton item={{
                         name: 'Confirm',
                         isDisabled: checkDisabled,
                         onClick: confirmEvent,
-                    }} state={this.state} gin={this.gin} />
+                    }} state={state} gin={this.gin} />
                     <GinButton item={{
                         name: 'Decline',
                         onClick: passEvent,
-                    }} state={this.state} gin={this.gin} />
+                    }} state={state} gin={this.gin} />
                 </div>
             </div>;
     
@@ -153,13 +153,13 @@ class App extends Component {
                             name: 'Add 100 crystals',
                             isDisabled: (store) => store.donated,
                             onClick: (store) => { store.donate += 100; store.donated = true; return store; }
-                        }} state={this.state} gin={this.gin} /></div>
-                        <div className="row-xs filament">You have {this.state.donate} crystals</div>
+                        }} state={state} gin={this.gin} /></div>
+                        <div className="row-xs filament">You have {state.donate} crystals</div>
                         <div className="row-xs filament"><GinButton item={{
                             name: 'Add Million Dollars',
                             cost: {donate: 11},
                             onClick: (store) => { store.balances.money += 1000000; return store; }
-                        }} state={this.state} gin={this.gin} /> Cost: 1 Crystals</div>
+                        }} state={state} gin={this.gin} /> Cost: 1 Crystals</div>
                         <div className="row-xs filament"><GinButton item={{
                             name: 'Fill Storage',
                             cost: {donate: 10},
@@ -168,21 +168,21 @@ class App extends Component {
                                     store.balances[key] = store.storage_limit[key];
                                 });
                                 return store; }
-                        }} state={this.state} gin={this.gin} /> Cost: 10 Crystals</div>
+                        }} state={state} gin={this.gin} /> Cost: 10 Crystals</div>
                         <div className="row-xs filament">
                             <GinButton item={{
                                 name: 'Additional Builder',
                                 cost: {donate: 25},
                                 onClick: (store) => { store.constructors++; return store; }
-                                }} state={this.state} gin={this.gin} /> Cost: 25 Crystals
+                                }} state={state} gin={this.gin} /> Cost: 25 Crystals
                         </div>
-                        <div className="row-xs filament">Current builders: {this.state.constructors}</div>
+                        <div className="row-xs filament">Current builders: {state.constructors}</div>
         
                         { 1 == 0 ?
                             <div className="row-xs filament"><GinButton item={{
                                 name: 'Broke The Game',
                                 onClick: (store) => { store.balances.money += 100000000; store.balances.goods += 10000000; store.balances.oil += 1000000; return store; }
-                            }} state={this.state} gin={this.gin} /></div>
+                            }} state={state} gin={this.gin} /></div>
                             : '' }
     
                     </div>
@@ -204,7 +204,7 @@ class App extends Component {
                                 <div className="flex-element">{drawCost(item.affected, true)}</div>
                             </div>
                             <div className="flex-element">
-                                <div className="flex-element"><UpGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
+                                <div className="flex-element"><UpGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
                                 <div className="flex-element">Cost: {drawCost(calcUpgradeCost(state, key))}</div>
                             </div>
                         </div>
@@ -225,7 +225,7 @@ class App extends Component {
                                     <div className="flex-element">Fullness {state.balances[item.resource]}/{state.storage_limit[item.resource]} ({(state.balances[item.resource]/state.storage_limit[item.resource]*100).toFixed(2)}%)</div>
                                 </div>
                                 <div className="flex-element">
-                                    <div className="flex-element"><StorageGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
+                                    <div className="flex-element"><StorageGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
                                     <div className="flex-element">Cost: {drawCost(calcStorageCost(state, key))}</div>
                                 </div>
                             </div>
@@ -241,13 +241,13 @@ class App extends Component {
                             </div>
                             <div className="flex-element flex-container-col slim">
                                 <div className="flex-element flex-container-row slim">
-                                    <div className="flex-element"><CollectGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
-                                    <div className="flex-element">Cycle: {state.buildings[key].fullness}/{item.cycle}</div>
+                                    <div className="flex-element"><CollectGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
+                                    <div className="flex-element">Cycle: {state.buildings[key].fullness}/{calcCycle(state, key)}</div>
                                 </div>
-                                <div className="flex-element">Profit: {_.values(item.profit)[0]} x {state.buildings[key].level} x {state.buildings[key].modifier} = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier} {item.type} or {(_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier / item.cycle * 10).toFixed(0)}/sec </div>
+                                <div className="flex-element">Profit: {_.values(item.profit)[0]} x {state.buildings[key].level} x {state.buildings[key].modifier} = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier} {item.type} or {(_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier / calcCycle(state, key) * 10).toFixed(0)}/sec </div>
                             </div>
                             <div className="flex-element">
-                                <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
+                                <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
                                 <div className="flex-element">Cost: {drawCost(calcBuildCost(state, key))}</div>
                             </div>
                         </div>
@@ -255,25 +255,41 @@ class App extends Component {
                 </div>
             </div>;
         
+        
         const managers_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h4 className="slim">Managers</h4>
-                    {_.map(pick(state, managers), (item, key) =>
+                    <h4>Offered Managers</h4>
+                    {_.map(state.offered_managers, (item, key) =>
                         <div className="flex-element flex-container-row panel filament" key={key}>
                             <div className="flex-element flex-container-col slim">
                                 <div className="flex-element">{item.name}</div>
                             </div>
-                            {state.managers[key].hired ?
-                                <div className="flex-element">
-                                    <h4>Hired</h4>
-                                </div>
-                                :
-                                <div className="flex-element">
-                                    <div className="flex-element"><HireGinButton item={item} item_key={key} key={key} state={this.state} gin={this.gin} /></div>
-                                    <div className="flex-element">Cost: {drawCost(item.cost)}</div>
-                                </div>
-                            }
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element">auto_collect: {item.auto_collect.join(' ')}</div>
+                                <div className="flex-element">auto_build: {item.auto_build.join(' ')}</div>
+                            </div>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element"><HireGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
+                                <div className="flex-element">Bonus: {item.bonus*100}%</div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    <h4 className="slim">Your Managers</h4>
+                    {_.map(state.managers, (item, key) =>
+                        <div className="flex-element flex-container-row panel filament" key={key}>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element">{item.name}</div>
+                            </div>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element">auto_collect: {item.auto_collect.join(' ')}</div>
+                                <div className="flex-element">auto_build: {item.auto_build.join(' ')}</div>
+                            </div>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element"><FireGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
+                                <div className="flex-element">Bonus: {item.bonus*100}%</div>
+                            </div>
         
                         </div>
                     )}
@@ -295,7 +311,7 @@ class App extends Component {
                         <div className="row-xs filament"><GinButton item={{
                             name: 'Reset +' + calcPrestige(state) + '%',
                             onClick: reset
-                        }} state={this.state} gin={this.gin} /></div>
+                        }} state={state} gin={this.gin} /></div>
                         
                     </div>
                 </div>
@@ -313,47 +329,47 @@ class App extends Component {
         
         return (
             <Fullscreen
-                enabled={this.state.isFull}
+                enabled={state.isFull}
                 onChange={isFull => this.gin.setState({isFull})}
             >
                 <div className="App" style={{backgroundImage: 'url(/bg-' + state.environment + '.png)'}}>
                     <div className="filament content_container" role="main">
-                        {this.state.tab !== 'intro' ?
+                        {state.tab !== 'intro' ?
                             header_subcomponent
                             : ''}
                         
-                        {this.state.tab === 'intro' ?
+                        {state.tab === 'intro' ?
                             intro_subcomponent
                             : ''}
                             
-                        {this.state.event !== false && this.state.event.opened === false ?
+                        {state.event !== false && state.event.opened === false ?
                             event_trigger_subcomponent
                             : ''}
-                        {this.state.event !== false && this.state.event.opened === true ?
+                        {state.event !== false && state.event.opened === true ?
                             event_popup_subcomponent
                             : ''}
     
                         <div style={{width: '100%', height: '70px'}}></div>
                         
-                        {this.state.tab === 'shop' ?
+                        {state.tab === 'shop' ?
                             shop_subcomponent
                             : ''}
-                        {this.state.tab === 'upgrade' ?
+                        {state.tab === 'upgrade' ?
                             upgrade_subcomponent
                             : ''}
-                        {this.state.tab === 'building' ?
+                        {state.tab === 'building' ?
                             building_subcomponent
                             : ''}
-                        {this.state.tab === 'managers' ?
+                        {state.tab === 'managers' ?
                             managers_subcomponent
                             : ''}
-                        {this.state.tab === 'reputation' ? 
+                        {state.tab === 'reputation' ? 
                             reputation_subcomponent
                             : ''}
 
                         <div style={{width: '100%', height: '40px'}}></div>
     
-                        {this.state.tab !== 'intro' ?
+                        {state.tab !== 'intro' ?
                             footer_subcomponent
                             : ''}
                     </div>

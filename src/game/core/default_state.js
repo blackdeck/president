@@ -22,8 +22,8 @@ export const default_state = {
     
     
     storage:   _.mapValues(storage,   () => { return {level: 0, modifier: 1}; }),
-    buildings: _.mapValues(buildings, () => { return {level: 0, busy: false, fullness: 0, modifier: 1}; }),
-    managers:  _.mapValues(managers,  () => { return {hired: false}; }),
+    buildings: _.mapValues(buildings, () => { return {level: 0, busy: false, fullness: 0, modifier: 1, speed_modifier: 1}; }),
+    managers: [],  // _.mapValues(managers,  () => { return {hired: false}; }),
     upgrades:  _.mapValues(upgrades,  () => { return {level: 0}; }),
     
     constructors: 1,
@@ -34,6 +34,8 @@ export const default_state = {
     
     event: false,
     last_event_tick: 0,
+    
+    offered_managers: [],
     
     
     
