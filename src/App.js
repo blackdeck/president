@@ -12,7 +12,7 @@ import './css/App.css';
 
 import {Gin, isEnough, drawCost} from './bdcgin/Gin';
 import GinGameMenu from './bdcgin/GinGameMenu';
-import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, HireGinButton, FireGinButton, UpGinButton } from "./bdcgin/GinButton";
+import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, AutoBuildingGinButton, HireGinButton, FireGinButton, UpGinButton } from "./bdcgin/GinButton";
 
 import {rules} from './game/core/rules';
 import {pick, calcPrestige, reset} from './game/helpers';
@@ -244,10 +244,13 @@ class App extends Component {
                                     <div className="flex-element"><CollectGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
                                     <div className="flex-element">Cycle: {state.buildings[key].fullness}/{calcCycle(state, key)}</div>
                                 </div>
-                                <div className="flex-element">Profit: {_.values(item.profit)[0]} x {state.buildings[key].level} x {state.buildings[key].modifier} = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier} {item.type} or {(_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier / calcCycle(state, key) * 10).toFixed(0)}/sec </div>
+                                <div className="flex-element">Profit: {_.values(item.profit)[0]} x {state.buildings[key].level} x {state.buildings[key].modifier} = {_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier} {item.type} or {(_.values(item.profit)[0] * state.buildings[key].level * state.buildings[key].modifier / calcCycle(state, key) * 10).toFixed(1)}/sec </div>
                             </div>
                             <div className="flex-element">
-                                <div className="flex-element"><BuildingGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
+                                <div className="flex-element">
+                                    <BuildingGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} />
+                                    {state.automated_buildings.includes(key) ? <AutoBuildingGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /> : ''}
+                                </div>
                                 <div className="flex-element">Cost: {drawCost(calcBuildCost(state, key))}</div>
                             </div>
                         </div>
@@ -256,42 +259,33 @@ class App extends Component {
             </div>;
         
         
+        const manager_subcomponent = (item, key, type) =>
+                        <div className="flex-element flex-container-row panel filament" key={key}>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element">{item.name}</div>
+                            </div>
+                            <div className="flex-element flex-container-col slim">
+                                {item.auto_collect.length ? <div className="flex-element">auto_collect: {item.auto_collect.join(' ')}</div> : ''}
+                                {item.auto_build.length   ? <div className="flex-element">auto_build: {item.auto_build.join(' ')}</div> : ''}
+                            </div>
+                            <div className="flex-element flex-container-col slim">
+                                <div className="flex-element">
+                                    {type === 'hire'
+                                        ? <HireGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} />
+                                        : <FireGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} />}</div>
+                                <div className="flex-element">Work Speed: {item.bonus*100}%</div>
+                            </div>
+                        </div>
+        
         const managers_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
-                    <h4>Offered Managers</h4>
-                    {_.map(state.offered_managers, (item, key) =>
-                        <div className="flex-element flex-container-row panel filament" key={key}>
-                            <div className="flex-element flex-container-col slim">
-                                <div className="flex-element">{item.name}</div>
-                            </div>
-                            <div className="flex-element flex-container-col slim">
-                                <div className="flex-element">auto_collect: {item.auto_collect.join(' ')}</div>
-                                <div className="flex-element">auto_build: {item.auto_build.join(' ')}</div>
-                            </div>
-                            <div className="flex-element flex-container-col slim">
-                                <div className="flex-element"><HireGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
-                                <div className="flex-element">Bonus: {item.bonus*100}%</div>
-                            </div>
-                        </div>
+                    <h4>Offered Candidates</h4>
+                    {_.map(state.offered_managers, (item, key) => manager_subcomponent(item, key, 'hire')
                     )}
                     
-                    <h4 className="slim">Your Managers</h4>
-                    {_.map(state.managers, (item, key) =>
-                        <div className="flex-element flex-container-row panel filament" key={key}>
-                            <div className="flex-element flex-container-col slim">
-                                <div className="flex-element">{item.name}</div>
-                            </div>
-                            <div className="flex-element flex-container-col slim">
-                                <div className="flex-element">auto_collect: {item.auto_collect.join(' ')}</div>
-                                <div className="flex-element">auto_build: {item.auto_build.join(' ')}</div>
-                            </div>
-                            <div className="flex-element flex-container-col slim">
-                                <div className="flex-element"><FireGinButton item={item} item_key={key} key={key} state={state} gin={this.gin} /></div>
-                                <div className="flex-element">Bonus: {item.bonus*100}%</div>
-                            </div>
-        
-                        </div>
+                    <h4 className="slim">Your Ministers</h4>
+                    {_.map(state.managers, (item, key) => manager_subcomponent(item, key, 'fire')
                     )}
                 </div>
             </div>;
@@ -322,7 +316,7 @@ class App extends Component {
                 <span className="col-xs filament"><a onClick={() => { this.changeTab('shop'); }}     title='Shop'>      Shop</a></span>
                 <span className="col-xs filament"><a onClick={() => { this.changeTab('upgrade'); }}  title='Upgrade'>   Upgrade</a></span>
                 <span className="col-xs filament"><a onClick={() => { this.changeTab('building'); }} title='Building'>  Building</a></span>
-                <span className="col-xs filament"><a onClick={() => { this.changeTab('managers'); }} title='Managers'>  Managers</a></span>
+                <span className="col-xs filament"><a onClick={() => { this.changeTab('managers'); }} title='Ministers'>  Ministers</a></span>
                 <span className="col-xs filament"><a onClick={() => { this.changeTab('reputation'); }} title='Reputation'>   Reputation</a></span>
             </div>;
         

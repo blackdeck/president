@@ -102,12 +102,12 @@ export class Gin {
     loadGame = (save_name = 0) => {
         this.setCurrentSaveName(save_name);
         var app_state = JSON.parse(localStorage.getItem(this.game_name + "_save_" + save_name));
-        this.setState(_.assign(this.stateGenerator(), app_state));
+        this.setState(_.merge(this.stateGenerator(), app_state));
     };
 
     loadDefaultGame = () => {
         var app_state = this.getCurrentSaveJSON();
-        this.setState(app_state ? _.assign(this.stateGenerator(), app_state) : _.assign(this.store, this.stateGenerator()));
+        this.setState(app_state ? _.merge(this.stateGenerator(), app_state) : _.merge(this.store, this.stateGenerator()));
     };
 
     saveGameAs = (save_name = 0, state) => {
