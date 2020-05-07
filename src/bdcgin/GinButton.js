@@ -6,8 +6,8 @@ import _ from 'lodash';
 import {isEnough} from "./Gin";
 
 import {storage, calcStorageCost, buyStorage} from '../game/knowledge/storage';
-import {buildings, buildItem, calcBuildCost, calcBuildDuration, calcProfit, calcBuildPercent, collectItem} from "../game/knowledge/buildings";
-import {hire} from "../game/knowledge/managers";
+import {buildings, buildItem, calcBuildCost, calcBuildDuration, calcProfit, calcBuildPercent, collectItem, calcCycle} from "../game/knowledge/buildings";
+import {hire, fire} from "../game/knowledge/managers";
 import {calcUpgradeCost, upgrade} from "../game/knowledge/upgrades";
 
 export default class GinButton extends Component {
@@ -80,7 +80,7 @@ export class CollectGinButton extends Component {
             <GinButton
                 item={{
                     name: 'Collect ' + _.values(calcProfit(this.props.state, this.props.item_key))[0] + ' ' + buildings[this.props.item_key].type,
-                    isDisabled: (state) => state.buildings[this.props.item_key].fullness < this.props.item.cycle,
+                    isDisabled: (state) => state.buildings[this.props.item_key].fullness < calcCycle(state, this.props.item_key),
                     cost: false,
                     onClick: (state) => collectItem(state, this.props.item_key)
                 }}
@@ -130,9 +130,24 @@ export class HireGinButton extends Component {
         return (
             <GinButton
                 item={{
-                    name: 'Hire',
-                    cost: this.props.item.cost,
+                    name: 'Hire $' + Math.pow(10, this.props.state.managers.length+1) + ' money',
+                    cost: {'balances.money': Math.pow(10, this.props.state.managers.length+1)},
                     onClick: (state) => hire(state, this.props.item_key)
+                }}
+                state={this.props.state}
+                gin={this.props.gin}
+            />
+        );
+    }
+}
+
+export class FireGinButton extends Component {
+    render() {
+        return (
+            <GinButton
+                item={{
+                    name: 'Fire!',
+                    onClick: (state) => fire(state, this.props.item_key)
                 }}
                 state={this.props.state}
                 gin={this.props.gin}

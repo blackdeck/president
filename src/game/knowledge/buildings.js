@@ -38,6 +38,10 @@ export const calcProfit = (store, item_key) => {
     return _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level * store.buildings[item_key].modifier);
 };
 
+export const calcCycle = (store, item_key) => {
+    return Math.ceil(buildings[item_key].cycle / store.buildings[item_key].speed_modifier);
+};
+
 export const collectItem = (store, item_key) => {
     // console.log(item_key, buildings[item_key].profit, store.buildings[item_key].level);
     store.buildings[item_key].fullness = 0;

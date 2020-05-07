@@ -5,9 +5,11 @@ import _ from 'lodash';
 import {isEnough, gainCost} from '../../bdcgin/Gin';
 
 import {storage, calcStorageCapacity} from '../knowledge/storage';
-import {buildings, finishItem, collectItem} from '../knowledge/buildings';
+import {buildings, finishItem, collectItem, calcBuildCost, buildItem, calcCycle} from '../knowledge/buildings';
 import {events, genEvent} from '../knowledge/events';
-import {managers} from '../knowledge/managers';
+import {managers, generateManager} from '../knowledge/managers';
+
+import {shuffleObject} from '../helpers';
 
 
 export const rules = {
@@ -17,21 +19,20 @@ export const rules = {
         onFrame: (store, params = {}) => {
             let automated_buildings = [];
             _.each(store.managers, (manager, key) => {
-                if (manager.hired === true) {
-                    _.each(managers[key].automation, (automated_building) => {
-                        automated_buildings.push(automated_building);
-                    })
-                }
+                // console.log(manager, key);
+                _.each(manager.auto_collect, (automated_building) => {
+                    automated_buildings.push(automated_building);
+                })
             });
             
             
             _.each(store.buildings, (building, key) => {
-                if (building.level > 0 && store.buildings[key].fullness < buildings[key].cycle) {
+                if (building.level > 0 && store.buildings[key].fullness < calcCycle(store, key)) {
                     store.buildings[key].fullness++;
                 }
     
-                // /* AUTOMATION
-                if (store.buildings[key].fullness >= buildings[key].cycle && automated_buildings.includes(key)) { // store.managers[key].hired
+                // /* auto_collect
+                if (store.buildings[key].fullness >= calcCycle(store, key) && automated_buildings.includes(key)) { // store.managers[key].hired
                     store = collectItem(store, key);
                 }
             });
@@ -56,6 +57,24 @@ export const rules = {
             });
     
             _.remove(store.constructing, (task) => task.start_frame + task.duration <= store.frame);
+    
+    
+            // /* auto_build
+            if (store.constructing.length < store.constructors) {
+                let automated_buildings = [];
+                _.each(store.managers, (manager, key) => {
+                    // console.log(manager, key);
+                    _.each(manager.auto_build, (automated_building) => {
+                        automated_buildings.push(automated_building);
+                    })
+                });
+    
+                _.each(shuffleObject(_.pickBy(store.buildings, {busy: false})), (building, key) => {
+                    if (automated_buildings.includes(key) && store.constructing.length < store.constructors && isEnough(store, calcBuildCost(store, key))) {
+                        store = buildItem(store, key);
+                    }
+                });
+            }
             
             return store;
         },
@@ -82,6 +101,24 @@ export const rules = {
             if (store.event !== false && store.event.opened !== true && store.event.start_tick + 7 < store.tick) {
                 store.event = false;
                 store.last_event_tick = store.tick;
+            }
+            
+            return store;
+        }
+    },
+    
+    
+    managers: {
+        onFrame: (store, params = {}) => {
+            return store;
+        },
+        
+        onTick: (store, params = {}) => {
+            if (store.offered_managers.length === 3 && _.random(10) === 0) {
+                store.offered_managers.shift();
+            }
+            while (store.offered_managers.length < 3 &&  store.buildings.money1.level > 0) {
+                store.offered_managers.push(generateManager(store));
             }
             
             return store;
