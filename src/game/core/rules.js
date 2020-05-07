@@ -68,8 +68,10 @@ export const rules = {
                         automated_buildings.push(automated_building);
                     })
                 });
+                
+                store.automated_buildings = automated_buildings;
     
-                _.each(shuffleObject(_.pickBy(store.buildings, {busy: false})), (building, key) => {
+                _.each(shuffleObject(_.pickBy(store.buildings, {busy: false, auto_build: true})), (building, key) => {
                     if (automated_buildings.includes(key) && store.constructing.length < store.constructors && isEnough(store, calcBuildCost(store, key))) {
                         store = buildItem(store, key);
                     }
@@ -93,7 +95,7 @@ export const rules = {
         
         onTick: (store, params = {}) => {
             if (store.event === false && store.last_event_tick + 30 < store.tick) {
-                if (_.random(10000) + (store.tick - store.last_event_tick) >= 10000) {
+                if (_.random(100000) + (store.tick - store.last_event_tick) >= 100000) {
                     store.event = genEvent(store);
                 }
             }
