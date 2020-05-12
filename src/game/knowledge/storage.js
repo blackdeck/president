@@ -8,7 +8,7 @@ export const calcStorageCost = (store, item_key) => {
     
     return _.mapValues(storage[item_key].base_cost, (item_cost, key) => {
         
-        let cost = item_cost * Math.pow(0.99, store.prestige);
+        let cost = item_cost * Math.pow(0.99, store.permanent.prestige);
         
         //console.log(item_cost, buildings[item_key].cost_grows, store.buildings[item_key].level);
         // console.log(Math.pow(item_cost, buildings[item_key].cost_grows * store.buildings[item_key].level));
@@ -30,12 +30,17 @@ export const checkStorageVolume = (store, cost) => {
 
 export const calcStorageCapacity = (store, item_key) => {
     // console.log(item_key, buildings[item_key].profit, store.buildings[item_key].level);
-    return _.mapValues(storage[item_key].capacity, (base_capacity) => base_capacity * store.storage[item_key].level * store.storage[item_key].modifier);
+    
+    return _.mapValues(storage[item_key].capacity, (base_capacity) => {
+        let capacity = base_capacity * Math.pow(1.01, store.permanent.fame);
+        return capacity * store.storage[item_key].level * store.storage[item_key].modifier;
+    });
 };
 
 
 export const calcAllStorage = (store) => {
     let limits = {money: 10000, goods: 1000, oil: 100, materials: 1000, helium: 100};
+    limits = _.mapValues(limits, (limit) => limit * Math.pow(1.01, store.permanent.fame));
     
     _.each(storage, (storage_item, key) => {
         _.each(calcStorageCapacity(store, key), (capacity, resource) => {

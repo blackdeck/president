@@ -116,7 +116,7 @@ export const rules = {
         },
         
         onTick: (store, params = {}) => {
-            if (store.offered_managers.length === 3 && _.random(10) === 0) {
+            if (store.offered_managers.length === 3 && _.random(20) === 0) {
                 store.offered_managers.shift();
             }
             while (store.offered_managers.length < 3 &&  store.buildings.money1.level > 0) {

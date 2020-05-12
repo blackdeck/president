@@ -9,7 +9,7 @@ export const calcBuildCost = (store, item_key) => {
     
     return _.mapValues(buildings[item_key].base_cost, (item_cost, key) => {
         
-        let cost = item_cost * Math.pow(0.99, store.prestige);
+        let cost = item_cost * Math.pow(0.99, store.permanent.prestige);
         
         //console.log(item_cost, buildings[item_key].cost_grows, store.buildings[item_key].level);
         // console.log(Math.pow(item_cost, buildings[item_key].cost_grows * store.buildings[item_key].level));
@@ -35,7 +35,11 @@ export const calcBuildPercent = (store, item_key) => {
 
 
 export const calcProfit = (store, item_key) => {
-    return _.mapValues(buildings[item_key].profit, (base_profit) => base_profit * store.buildings[item_key].level * store.buildings[item_key].modifier);
+    return _.mapValues(buildings[item_key].profit, (base_profit) => {
+    
+        let profit = base_profit * Math.pow(1.01, store.permanent.reputation);
+        return (profit * store.buildings[item_key].level * store.buildings[item_key].modifier).toFixed(2);
+    });
 };
 
 export const calcCycle = (store, item_key) => {

@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 
 import {getDefaultState} from '../game/core/default_state';
+import {calcAllStorage} from './knowledge/storage';
 
 
 export const pick = (store, collection) => {
@@ -10,18 +11,21 @@ export const pick = (store, collection) => {
 };
 
 
-export const calcPrestige = (store) => {
+export const calcReputation = (store) => {
     // console.log(_.reduce(_.values(store.buildings), (sum, item) => sum + item.level), 0);
     return _.reduce(_.values(store.buildings), (sum, item) => sum + item.level, 0);
 };
 
 export const reset = (store) => {
     
-    let prestige = calcPrestige(store) + store.prestige;
+    let permanent = store.permanent;
+    permanent.reputation += calcReputation(store);
     
     store = getDefaultState();
     
-    store.prestige = prestige;
+    store.permanent = permanent;
+    
+    store = calcAllStorage(store);
     
     return store;
 };

@@ -18,7 +18,13 @@ export const default_state = {
     special: {rockets: 0, colonizer: 0},
     donated: false,
     donate: 0,
-    prestige: 0,
+    
+    permanent: {
+        reputation: 0,
+        fame:       0,
+        prestige:   0,
+    },
+    
     
     
     storage:   _.mapValues(storage,   () => { return {level: 0, modifier: 1}; }),
