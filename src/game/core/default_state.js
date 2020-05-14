@@ -16,13 +16,18 @@ export const default_state = {
     balances:       {money: 0, goods: 0, oil: 0, materials: 0, helium: 0},
     storage_limit:  {money: 0, goods: 0, oil: 0, materials: 0, helium: 0},
     special: {rockets: 0, colonizer: 0},
-    donated: false,
-    donate: 0,
     
     permanent: {
         reputation: 0,
         fame:       0,
         prestige:   0,
+        
+        constructors: 1,
+        donated: false,
+        donate: 0,
+        usd: 0,
+    
+        rewards_collected: []
     },
     
     
@@ -32,7 +37,7 @@ export const default_state = {
     managers: [],  // _.mapValues(managers,  () => { return {hired: false}; }),
     upgrades:  _.mapValues(upgrades,  () => { return {level: 0}; }),
     
-    constructors: 1,
+    
     constructing: [],
     
     environment: 'earth',
@@ -43,6 +48,8 @@ export const default_state = {
     
     offered_managers: [],
     automated_buildings: [],
+    
+    rewards: [],
     
     
     
@@ -63,8 +70,11 @@ export const default_state = {
 
 
 export const getDefaultState = () => {
+    
     let state = _.cloneDeep(default_state);
-
+    
+    state.buildings = _.mapValues(buildings, () => { return {level: 0, busy: false, auto_build: true, fullness: 0, modifier: 1, speed_modifier: 1}; });
+    
     state.balances.money = 1;
    // state.balances.money = 900000;
     
@@ -72,6 +82,6 @@ export const getDefaultState = () => {
     state = calcAllStorage(state);
     
     // state.balances.buildings = _.mapValues(buildings, () => { return {level: 1}; });
-
+    
     return state;
 };

@@ -30,6 +30,12 @@ export const reset = (store) => {
     return store;
 };
 
+export const giveReward = (store, reward) => {
+    store.rewards.push(reward);
+    return store;
+};
+
+
 
 // В теории объекты в JS не имеют порядка, но на практике - имеют. Странно, но факт.
 // Эта функция рендомизирует порядок элементов в объекте.

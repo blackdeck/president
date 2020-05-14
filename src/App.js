@@ -7,10 +7,11 @@ import _ from 'lodash';
 import './css/header.css';
 import './css/footer.css';
 import './css/event.css';
+import './css/rewards.css';
 import './css/App.css';
 
 
-import {Gin, isEnough, drawCost} from './bdcgin/Gin';
+import {Gin, isEnough, drawCost, gainCost} from './bdcgin/Gin';
 import GinGameMenu from './bdcgin/GinGameMenu';
 import GinButton, {StorageGinButton, CollectGinButton, BuildingGinButton, AutoBuildingGinButton, HireGinButton, FireGinButton, UpGinButton } from "./bdcgin/GinButton";
 
@@ -20,10 +21,11 @@ import {pick, calcReputation, reset} from './game/helpers';
 import {game_name} from './game/core/app_config';
 import {getDefaultState} from './game/core/default_state';
 
+import {builder_store, stores, crystals} from './game/knowledge/stores';
+import {upgrades, calcUpgradeCost, upgrade} from './game/knowledge/upgrades';
 import {storage, calcStorageCost, buyStorage, calcAllStorage} from './game/knowledge/storage';
 import {buildings, calcBuildCost, calcCycle, calcProfit, buildItem, collectItem} from './game/knowledge/buildings';
 import {managers, hire} from './game/knowledge/managers';
-import {upgrades, calcUpgradeCost, upgrade} from './game/knowledge/upgrades';
 import {checkDisabled, confirmEvent, passEvent} from './game/knowledge/events';
 
 
@@ -33,6 +35,7 @@ class App extends Component {
         super(props);
 
         this.gin = new Gin(game_name, getDefaultState);
+        this.gin.init();
         //this.gin.addViewHandler(state => { console.log(state, this, this.setState); this.setState(state); });
         this.gin.connectReact(this);
         this.gin.registerRules(rules);
@@ -63,7 +66,7 @@ class App extends Component {
 
     render() {
         let state = this.state;
-    
+        
         
         const header_subcomponent =
             <div className="header flex-container-row col">
@@ -121,6 +124,20 @@ class App extends Component {
                 </h4>
             </div>;
         
+        const reward_pupup_subcomponent =
+            <div className="reward_popup filament">
+                <div className="panel">
+                    <h2>Reward!</h2>
+                    <h3>{drawCost(state.rewards[0])}</h3>
+                    <h3><GinButton item={{
+                        name: 'Collect!',
+                        onClick: (store) => {
+                            store = gainCost(store, store.rewards[0]);
+                            store.rewards.splice(0, 1);
+                            return store; }
+                    }} state={state} gin={this.gin} /></h3>
+                </div>
+            </div>;
     
         const event_trigger_subcomponent =
             <div className="event_trigger filament" onClick={() => this.gin.onClick({onClick: (store) => { store.event.opened = true; return store; }})}>
@@ -144,6 +161,26 @@ class App extends Component {
                 </div>
             </div>;
     
+        
+        const store_subcomponent = (store_item) =>
+            <div className="flex-container-row panel">
+                <div className="flex-element flex-container-row filament">
+                    <div className="flex-element"><GinButton item={store_item} state={state} gin={this.gin} /> </div>
+                    <div className="flex-element">Cost: {_.values(store_item.cost)[0]} Crystals</div>
+                </div>
+                <div className="flex-element">{store_item.text}</div>
+            </div>;
+        
+        const crystal_store_subcomponent = (store_item) =>
+            <div className="flex-container-row panel">
+                <div className="flex-element flex-container-row filament">
+                    <div className="flex-element"><GinButton item={store_item} state={state} gin={this.gin} /> </div>
+                    <div className="flex-element">Cost: ${_.values(store_item.cost)[0]} </div>
+                </div>
+                <div className="flex-element">{store_item.text}</div>
+            </div>;
+        
+    
         const shop_subcomponent =
             <div className="filament">
                 <div className="flex-container-col panel">
@@ -151,38 +188,51 @@ class App extends Component {
                     <div className="col-xs flex-element filament">
                         <div className="row-xs filament"><GinButton item={{
                             name: 'Add 100 crystals',
-                            isDisabled: (store) => store.donated,
-                            onClick: (store) => { store.donate += 100; store.donated = true; return store; }
+                            isDisabled: (store) => store.permanent.donated,
+                            onClick: (store) => { store.permanent.donate += 100; store.permanent.donated = true; return store; }
                         }} state={state} gin={this.gin} /></div>
-                        <div className="row-xs filament">You have {state.donate} crystals</div>
-                        <div className="row-xs filament"><GinButton item={{
-                            name: 'Add Million Dollars',
-                            cost: {donate: 11},
-                            onClick: (store) => { store.balances.money += 1000000; return store; }
-                        }} state={state} gin={this.gin} /> Cost: 1 Crystals</div>
-                        <div className="row-xs filament"><GinButton item={{
-                            name: 'Fill Storage',
-                            cost: {donate: 10},
-                            onClick: (store) => {
-                                _.each(store.balances, (value, key) => {
-                                    store.balances[key] = store.storage_limit[key];
-                                });
-                                return store; }
-                        }} state={state} gin={this.gin} /> Cost: 10 Crystals</div>
-                        <div className="row-xs filament">
-                            <GinButton item={{
-                                name: 'Additional Builder',
-                                cost: {donate: 25},
-                                onClick: (store) => { store.constructors++; return store; }
-                                }} state={state} gin={this.gin} /> Cost: 25 Crystals
+                        <div className="row-xs filament"><h4>You have {state.permanent.donate} crystals</h4></div>
+    
+                        <div className="flex-container-col panel">
+                            <div className="flex-element"><h5>Builder Shop</h5></div>
+                            <div className="row-xs filament"><h5>Current builders: {state.permanent.constructors}</h5></div>
+                            {store_subcomponent(builder_store)}
                         </div>
-                        <div className="row-xs filament">Current builders: {state.constructors}</div>
-        
+                        
+                        <div className="flex-container-col panel">
+                            <div className="flex-element"><h5>Hardware store</h5></div>
+                            {_.map(stores, (store_item, key) => store_subcomponent(store_item)
+                            )}
+                        </div>
+                        
+                        <div className="flex-container-col panel">
+                            <div className="flex-element"><h5>Crystal Cove</h5></div>
+                            {_.map(crystals, (store_item, key) => crystal_store_subcomponent(store_item)
+                            )}
+                        </div>
+    
+    
                         { 1 == 0 ?
-                            <div className="row-xs filament"><GinButton item={{
-                                name: 'Broke The Game',
-                                onClick: (store) => { store.balances.money += 100000000; store.balances.goods += 10000000; store.balances.oil += 1000000; return store; }
-                            }} state={state} gin={this.gin} /></div>
+                            <div className="flex-container-col panel">
+                                <div className="row-xs filament"><GinButton item={{
+                                    name: 'Add Million Dollars',
+                                    cost: {"permanent.donate": 11},
+                                    onClick: (store) => { store.balances.money += 1000000; return store; }
+                                }} state={state} gin={this.gin} /> Cost: 1 Crystals</div>
+                                <div className="row-xs filament"><GinButton item={{
+                                    name: 'Fill Storage',
+                                    cost: {"permanent.donate": 10},
+                                    onClick: (store) => {
+                                        _.each(store.balances, (value, key) => {
+                                            store.balances[key] = store.storage_limit[key];
+                                        });
+                                        return store; }
+                                }} state={state} gin={this.gin} /> Cost: 10 Crystals</div>
+                                <div className="row-xs filament"><GinButton item={{
+                                    name: 'Broke The Game',
+                                    onClick: (store) => { store.balances.money += 100000000; store.balances.goods += 10000000; store.balances.oil += 1000000; return store; }
+                                }} state={state} gin={this.gin} /></div>
+                            </div>
                             : '' }
     
                     </div>
@@ -371,6 +421,10 @@ class App extends Component {
                         
                         {state.tab === 'intro' ?
                             intro_subcomponent
+                            : ''}
+    
+                        {state.rewards.length > 0 ?
+                            reward_pupup_subcomponent
                             : ''}
                             
                         {state.event !== false && state.event.opened === false ?

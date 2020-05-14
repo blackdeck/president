@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import {isEnough, gainCost} from '../../bdcgin/Gin';
 import {checkStorageVolume} from './storage';
+import {giveReward} from '../helpers';
 
 export const calcBuildCost = (store, item_key) => {
     // console.log(item_key, store.buildings, store.buildings[item_key]);
@@ -69,6 +70,18 @@ export const buildItem = (store, item_key) => {
 export const finishItem = (store, item_key) => {
     store.buildings[item_key].level++;
     store.buildings[item_key].busy = false;
+    
+    if (!store.permanent.rewards_collected.includes(item_key)) {
+        console.log(item_key);
+        store.permanent.rewards_collected.push(item_key);
+        store = giveReward(store, {"permanent.donate": 10});
+        if (item_key === 'oil1') {
+            store = giveReward(store, {"permanent.constructors": 1});
+        }
+    }
+    
+     console.log(store);
+    
     return store;
 };
 

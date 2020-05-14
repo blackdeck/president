@@ -68,7 +68,7 @@ export class BuildingGinButton extends Component {
                                  ? 'Build ' + calcBuildPercent(this.props.state, this.props.item_key) + '%'
                                  : 'Build ' + (calcBuildDuration(this.props.state, this.props.item_key)/10).toFixed(0) + ' sec',
                     cost:    calcBuildCost(this.props.state, this.props.item_key),
-                    isDisabled: (state) => this.props.state.buildings[this.props.item_key].busy || this.props.state.constructing.length >= this.props.state.constructors,
+                    isDisabled: (state) => this.props.state.buildings[this.props.item_key].busy || this.props.state.constructing.length >= this.props.state.permanent.constructors,
                     onClick: (state) => buildItem(state, this.props.item_key)
                 }}
                 state={this.props.state}
