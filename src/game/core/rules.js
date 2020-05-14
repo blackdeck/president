@@ -60,7 +60,7 @@ export const rules = {
     
     
             // /* auto_build
-            if (store.constructing.length < store.constructors) {
+            if (store.constructing.length < store.permanent.constructors) {
                 let automated_buildings = [];
                 _.each(store.managers, (manager, key) => {
                     // console.log(manager, key);
@@ -72,7 +72,7 @@ export const rules = {
                 store.automated_buildings = automated_buildings;
     
                 _.each(shuffleObject(_.pickBy(store.buildings, {busy: false, auto_build: true})), (building, key) => {
-                    if (automated_buildings.includes(key) && store.constructing.length < store.constructors && isEnough(store, calcBuildCost(store, key))) {
+                    if (automated_buildings.includes(key) && store.constructing.length < store.permanent.constructors && isEnough(store, calcBuildCost(store, key))) {
                         store = buildItem(store, key);
                     }
                 });
@@ -119,7 +119,7 @@ export const rules = {
             if (store.offered_managers.length === 3 && _.random(20) === 0) {
                 store.offered_managers.shift();
             }
-            while (store.offered_managers.length < 3 &&  store.buildings.money1.level > 0) {
+            while (store.offered_managers.length < 3 && store.buildings.money1.level > 0) {
                 store.offered_managers.push(generateManager(store));
             }
             
