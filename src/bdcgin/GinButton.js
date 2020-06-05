@@ -100,8 +100,8 @@ export class HireGinButton extends Component {
         return (
             <GinButton
                 item={{
-                    name: 'Hire $' + Math.pow(10, this.props.state.managers.length+1) + ' money',
-                    cost: {'balances.money': Math.pow(10, this.props.state.managers.length+1)},
+                    name: 'Hire $' + Math.pow(5, this.props.state.managers.length+1) + ' money',
+                    cost: {'balances.money': Math.pow(5, this.props.state.managers.length+1)},
                     onClick: (state) => hire(state, this.props.item_key)
                 }}
                 state={this.props.state}
